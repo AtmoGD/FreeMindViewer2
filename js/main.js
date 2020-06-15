@@ -29,7 +29,7 @@ var Freemindtesting;
             params.list = "false";
         }
         if (params.path == undefined || params.path == "") {
-            params.path = "/mm";
+            params.path = "FreeMindViewer2/mm";
             params.map = "README.mm";
             params.list = "false";
         }
