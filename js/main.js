@@ -1,8 +1,9 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -28,7 +29,7 @@ var Freemindtesting;
             params.list = "false";
         }
         if (params.path == undefined || params.path == "") {
-            params.path = "/Public/mm";
+            params.path = "/mm";
             params.map = "README.mm";
             params.list = "false";
         }
@@ -38,6 +39,7 @@ var Freemindtesting;
             rootNode = docNode.firstElementChild;
             if (params.list == "true") {
                 //createList();
+                //<----------------------------------------------------------------------Hier wird nichts gemacht------------------------------------------------------>
             }
             else if (params.list == "false" || !params.list) {
                 createCanvas();
@@ -45,11 +47,11 @@ var Freemindtesting;
             }
         });
         //document.getElementById('hideit').addEventListener('click', toggleHide);
-        window.addEventListener('resize', resizecanvas, false);
+        window.addEventListener("resize", resizecanvas, false);
     }
     function fetchXML() {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch('./mm/EIA2.mm');
+            const response = yield fetch(params.path + "/" + params.map);
             const xmlText = yield response.text();
             mindmapData = StringToXML(xmlText); // Save xml in letiable
         });
@@ -59,9 +61,11 @@ var Freemindtesting;
         return new DOMParser().parseFromString(xString, "text/xml");
     }
     function createCanvas() {
+        //<----------------------------------------------------------------------querySelector------------------------------------------------------>
         canvas = document.getElementsByTagName("canvas")[0];
         /* canvas = document.createElement("canvas");
         canvas.id = "fmcanvas"; */
+        //<----------------------------------------------------------------------Doppelt??? (Zeile 91 & 92)------------------------------------------------------>
         canvas.setAttribute("height", "window.innerHeight");
         canvas.setAttribute("width", "window.innerWidth");
         //body.appendChild(canvas);
@@ -74,6 +78,7 @@ var Freemindtesting;
         Freemindtesting.rootNodeY = ctx.canvas.height / 2;
         // Eventlistener for draggable canvas
         //canvas.addEventListener("mousedown", handleMouseDown);
+        //<----------------------------------------------------------------------Funktion------------------------------------------------------>
         canvas.addEventListener("mousemove", onPointerMove);
         canvas.addEventListener("mousedown", onMouseDown);
         canvas.addEventListener("mouseup", onMouseUp);
@@ -82,6 +87,7 @@ var Freemindtesting;
         canvas.addEventListener("touchend", handleEnd, false);
         canvas.addEventListener("touchcancel", handleCancel, false);
         canvas.addEventListener("touchmove", handleMove, false);
+        //<----------------------------------------------------------------------Funktion------------------------------------------------------>
         //  canvas.addEventListener("touchend",)
     }
     function resizecanvas() {
@@ -92,7 +98,9 @@ var Freemindtesting;
         clearMap();
         fmvNodes.length = 0;
         // create root FMVNode
-        root = new Freemindtesting.FMVRootNode(ctx, rootNode.getAttribute("TEXT"));
+        root = new Freemindtesting.FMVRootNode(ctx, 
+        //<----------------------------------------------------------------------Komma weg------------------------------------------------------>
+        rootNode.getAttribute("TEXT"));
         fmvNodes.push(root);
         // Use root FMVNode as starting point and create all subFMVNodes
         createFMVNodes(rootNode, root);
@@ -108,6 +116,7 @@ var Freemindtesting;
             let childFMVNodes = new Array();
             for (let i = 0; i < children.length; i++) {
                 // use only children with rootNode as parent
+                //<----------------------------------------------------------------------Wurde in "getChildElements" schon abgefragt------------------------------------------------------>
                 if (children[i].parentElement == rootNode) {
                     let fmvNodeContent = children[i].getAttribute("TEXT");
                     let fmvNodeMapPosition = children[i].getAttribute("POSITION");
@@ -134,6 +143,7 @@ var Freemindtesting;
         let childElements = new Array();
         // get all children of parent as Element collection. Gets ALL children!
         childElementsCollection = parent.getElementsByTagName("node");
+        //<----------------------------------------------------------------------Es werden durch ALLE Elemente iteriert------------------------------------------------------>
         for (let i = 0; i < childElementsCollection.length; i++) {
             if (childElementsCollection[i].parentElement == parent) {
                 // save only the children with correct parent element
@@ -205,9 +215,11 @@ var Freemindtesting;
             redrawWithoutChildren();
         }
     }
+    //<----------------------------------------------------------------------Variablen mitten im Code------------------------------------------------------>
     let ongoingTouches = [];
     let cordX;
     let cordY;
+    //<----------------------------------------------------------------------Variablen mitten im Code------------------------------------------------------>
     function handleStart(_event) {
         _event.preventDefault();
         console.log(" touchstart");

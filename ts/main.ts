@@ -35,7 +35,7 @@ namespace Freemindtesting {
       params.list = "false";
     }
     if (params.path == undefined || params.path == "") {
-      params.path = "/Public/mm";
+      params.path = "/mm";
       params.map = "README.mm";
       params.list = "false";
     }
@@ -55,11 +55,11 @@ namespace Freemindtesting {
       }
     });
     //document.getElementById('hideit').addEventListener('click', toggleHide);
-    window.addEventListener('resize', resizecanvas, false);
+    window.addEventListener("resize", resizecanvas, false);
   }
 
   async function fetchXML(): Promise<void> {
-    const response: Response = await fetch("./mm/test.mm");
+    const response: Response = await fetch(params.path + "/" + params.map);
     
     const xmlText: string = await response.text();
     mindmapData = StringToXML(xmlText); // Save xml in letiable
