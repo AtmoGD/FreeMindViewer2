@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "plugins": [{ "name": "typescript-tslint-plugin" }],
+      "target": "es6",
+      "module": "commonjs",
+      "sourceMap": true,
+      "noImplicitAny": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "outDir": "./js" /* Redirect output structure to the directory. */,
+      "rootDir": "./ts" /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    },
+    "exclude": ["node_modules"]
+  }
