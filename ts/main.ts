@@ -13,9 +13,9 @@ namespace Freemindtesting {
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
 
-  
+
   //let ishidden: boolean = true; // canvas sichtbar bei false
-  
+
   export let rootNodeX: number;
   export let rootNodeY: number;
   let mindmapData: XMLDocument;
@@ -24,12 +24,12 @@ namespace Freemindtesting {
   let root: FMVRootNode;
   let fmvNodes: FMVNode[];
   let hasMouseBeenMoved: boolean = false;
-  
+
   //let url: string;
-  
+
   function init(): void {
     fmvNodes = [];
-    
+
     params = getUrlSearchJson();
     if (params.list == undefined) {
       params.list = "false";
@@ -40,7 +40,7 @@ namespace Freemindtesting {
       params.list = "false";
     }
     //url = params.path + "/" + params.map;
-    
+
     fetchXML().then(() => {
       docNode = mindmapData.documentElement;
       rootNode = docNode.firstElementChild;
@@ -48,10 +48,10 @@ namespace Freemindtesting {
         //createList();
         //<----------------------------------------------------------------------Hier wird nichts gemacht------------------------------------------------------>
       } else if (params.list == "false" || !params.list) {
-        
+
         createCanvas();
         createMindmap();
-        
+
       }
     });
     //document.getElementById('hideit').addEventListener('click', toggleHide);
@@ -60,18 +60,18 @@ namespace Freemindtesting {
 
   async function fetchXML(): Promise<void> {
     const response: Response = await fetch(params.path + "/" + params.map);
-    
+
     const xmlText: string = await response.text();
     mindmapData = StringToXML(xmlText); // Save xml in letiable
   }
-  
+
   // parses a string to XML
   function StringToXML(xString: string): XMLDocument {
     return new DOMParser().parseFromString(xString, "text/xml");
   }
-  
+
   function createCanvas(): void {
-    
+
     //<----------------------------------------------------------------------querySelector------------------------------------------------------>
     canvas = document.getElementsByTagName("canvas")[0];
     /* canvas = document.createElement("canvas");
@@ -80,18 +80,18 @@ namespace Freemindtesting {
     canvas.setAttribute("height", "window.innerHeight");
     canvas.setAttribute("width", "window.innerWidth");
     //body.appendChild(canvas);
-    
+
     ctx = <CanvasRenderingContext2D>canvas.getContext("2d");
-    
-    
+
+
     // match Canvas dimensions to browser window
     ctx.canvas.width = window.innerWidth;
     ctx.canvas.height = window.innerHeight;
-    
+
     // determine the center of the canvas
     rootNodeX = ctx.canvas.width / 2;
     rootNodeY = ctx.canvas.height / 2;
-    
+
     // Eventlistener for draggable canvas
     //canvas.addEventListener("mousedown", handleMouseDown);
     //<----------------------------------------------------------------------Funktion------------------------------------------------------>
@@ -105,7 +105,7 @@ namespace Freemindtesting {
     canvas.addEventListener("touchmove", handleMove, false);
     //<----------------------------------------------------------------------Funktion------------------------------------------------------>
     //  canvas.addEventListener("touchend",)
-    
+
   }
   function resizecanvas(): void {
     createCanvas();
@@ -122,7 +122,7 @@ namespace Freemindtesting {
     root = new FMVRootNode(
       ctx,
       //<----------------------------------------------------------------------Komma weg------------------------------------------------------>
-      rootNode.getAttribute("TEXT"),
+      rootNode.getAttribute("TEXT")
     );
     fmvNodes.push(root);
 
@@ -189,7 +189,7 @@ namespace Freemindtesting {
 
     return childElements;
   }
-  function redrawWithoutChildren() {
+  function redrawWithoutChildren(): void {
     clearMap();
     root.setPosition(0);
     root.drawFMVNode();
@@ -265,13 +265,13 @@ namespace Freemindtesting {
 
   let cordX: number;
   let cordY: number;
-   //<----------------------------------------------------------------------Variablen mitten im Code------------------------------------------------------>
-  function handleStart(_event: TouchEvent) {
+  //<----------------------------------------------------------------------Variablen mitten im Code------------------------------------------------------>
+  function handleStart(_event: TouchEvent): void {
     _event.preventDefault();
     console.log(" touchstart");
     let theTouchlist: TouchList = _event.touches;
 
-    for (let i = 0; i < theTouchlist.length; i++) {
+    for (let i: number = 0; i < theTouchlist.length; i++) {
       console.log("touchstart:" + i + "...");
       ongoingTouches.push(copyTouch(theTouchlist[i]));
       cordX = theTouchlist[i].clientX;
@@ -279,11 +279,11 @@ namespace Freemindtesting {
       console.log("touchstart:" + i + ".");
     }
   }
-  function handleMove(_event: TouchEvent) {
-    let touches = _event.changedTouches;
+  function handleMove(_event: TouchEvent): void {
+    let touches: TouchList = _event.changedTouches;
     console.log(touches.length);
-    for (let i = 0; i < touches.length; i++) {
-      let idx = ongoingTouchIndexById(touches[i].identifier);
+    for (let i: number = 0; i < touches.length; i++) {
+      let idx: number = ongoingTouchIndexById(touches[i].identifier);
       console.log(idx + " idx");
       let deltaX: number;
       let deltaY: number;
@@ -311,12 +311,12 @@ namespace Freemindtesting {
 
   }
 
-  function handleEnd(_event: TouchEvent) {
+  function handleEnd(_event: TouchEvent): void {
     _event.preventDefault();
-    let theTouchlist = _event.changedTouches;
-    for (var i = 0; i < theTouchlist.length; i++) {
+    let theTouchlist: TouchList = _event.changedTouches;
+    for (var i: number = 0; i < theTouchlist.length; i++) {
 
-      var idx = ongoingTouchIndexById(theTouchlist[i].identifier);
+      var idx: number = ongoingTouchIndexById(theTouchlist[i].identifier);
 
       if (idx >= 0) {
         console.log(" end of touch");
@@ -329,26 +329,26 @@ namespace Freemindtesting {
 
     }
   }
-  function handleCancel(_event: TouchEvent) {
+  function handleCancel(_event: TouchEvent): void {
     _event.preventDefault();
     console.log("touchcancel.");
     let touches: TouchList = _event.changedTouches;
 
-    for (var i = 0; i < touches.length; i++) {
-      var idx = ongoingTouchIndexById(touches[i].identifier);
+    for (var i: number = 0; i < touches.length; i++) {
+      var idx: number = ongoingTouchIndexById(touches[i].identifier);
       ongoingTouches.splice(idx, 1);  // remove it; we're done
 
     }
   }
-  function copyTouch(touch: Touch) {
+  function copyTouch(touch: Touch): {} {
     return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY };
   }
   function clearMap(): void {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // clears the canvas
   }
-  function ongoingTouchIndexById(idToFind: any) {
-    for (let i = 0; i < ongoingTouches.length; i++) {
-      let id = ongoingTouches[i].identifier;
+  function ongoingTouchIndexById(idToFind: any): number {
+    for (let i: number = 0; i < ongoingTouches.length; i++) {
+      let id: any = ongoingTouches[i].identifier;
       console.log(id + " id");
       if (id == idToFind) {
         return i;
