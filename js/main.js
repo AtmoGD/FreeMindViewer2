@@ -7,8 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var Freemindtesting;
-(function (Freemindtesting) {
+var FreeMindViewer;
+(function (FreeMindViewer) {
     window.addEventListener("load", init);
     let params;
     //let body: HTMLBodyElement = document.getElementsByTagName("body")[0];
@@ -74,8 +74,8 @@ var Freemindtesting;
         ctx.canvas.width = window.innerWidth;
         ctx.canvas.height = window.innerHeight;
         // determine the center of the canvas
-        Freemindtesting.rootNodeX = ctx.canvas.width / 2;
-        Freemindtesting.rootNodeY = ctx.canvas.height / 2;
+        FreeMindViewer.rootNodeX = ctx.canvas.width / 2;
+        FreeMindViewer.rootNodeY = ctx.canvas.height / 2;
         // Eventlistener for draggable canvas
         //canvas.addEventListener("mousedown", handleMouseDown);
         //<----------------------------------------------------------------------Funktion------------------------------------------------------>
@@ -98,7 +98,7 @@ var Freemindtesting;
         clearMap();
         fmvNodes.length = 0;
         // create root FMVNode
-        root = new Freemindtesting.FMVRootNode(ctx, 
+        root = new FreeMindViewer.FMVRootNode(ctx, 
         //<----------------------------------------------------------------------Komma weg------------------------------------------------------>
         rootNode.getAttribute("TEXT"));
         fmvNodes.push(root);
@@ -125,7 +125,7 @@ var Freemindtesting;
                     }
                     let fmvNodeFolded = children[i].getAttribute("FOLDED");
                     let fmvNodeFoldedBool = fmvNodeFolded == "true" ? true : false;
-                    let fmvNode = new Freemindtesting.FMVNode(parentFMVNode, ctx, fmvNodeContent, fmvNodeMapPosition, fmvNodeFoldedBool);
+                    let fmvNode = new FreeMindViewer.FMVNode(parentFMVNode, ctx, fmvNodeContent, fmvNodeMapPosition, fmvNodeFoldedBool);
                     childFMVNodes.push(fmvNode);
                     fmvNodes.push(fmvNode);
                     parentFMVNode.children = childFMVNodes;
@@ -173,8 +173,8 @@ var Freemindtesting;
             if (document.activeElement.nodeName.toLowerCase() != "input") {
                 // prevent default spacebar event (scrolling to bottom)
                 _event.preventDefault();
-                Freemindtesting.rootNodeX = canvas.width / 2;
-                Freemindtesting.rootNodeY = canvas.height / 2;
+                FreeMindViewer.rootNodeX = canvas.width / 2;
+                FreeMindViewer.rootNodeY = canvas.height / 2;
                 redrawWithoutChildren();
             }
         }
@@ -210,8 +210,8 @@ var Freemindtesting;
     function onPointerMove(_event) {
         hasMouseBeenMoved = true;
         if (_event.buttons == 1) {
-            Freemindtesting.rootNodeY += _event.movementY;
-            Freemindtesting.rootNodeX += _event.movementX;
+            FreeMindViewer.rootNodeY += _event.movementY;
+            FreeMindViewer.rootNodeX += _event.movementX;
             redrawWithoutChildren();
         }
     }
@@ -244,8 +244,8 @@ var Freemindtesting;
             let yStrich = touches[i].clientY;
             deltaX = xStrich - cordX;
             deltaY = yStrich - cordY;
-            Freemindtesting.rootNodeX += deltaX;
-            Freemindtesting.rootNodeY += deltaY;
+            FreeMindViewer.rootNodeX += deltaX;
+            FreeMindViewer.rootNodeY += deltaY;
             console.log(deltaX, deltaY, cordX, cordY, xStrich, yStrich);
             cordX = xStrich;
             cordY = yStrich;
@@ -314,5 +314,5 @@ var Freemindtesting;
             return JSON.parse("{}");
         }
     }
-})(Freemindtesting || (Freemindtesting = {}));
+})(FreeMindViewer || (FreeMindViewer = {}));
 //# sourceMappingURL=main.js.map

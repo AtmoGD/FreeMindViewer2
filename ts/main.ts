@@ -1,4 +1,4 @@
-namespace Freemindtesting {
+namespace FreeMindViewer {
 
   interface URLObject {
     path: string;

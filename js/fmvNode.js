@@ -1,5 +1,5 @@
-var Freemindtesting;
-(function (Freemindtesting) {
+var FreeMindViewer;
+(function (FreeMindViewer) {
     class FMVNode {
         constructor(parent, ctx, content, side, folded) {
             this.bezPtX1 = 30;
@@ -126,7 +126,7 @@ var Freemindtesting;
             }
         }
     }
-    Freemindtesting.FMVNode = FMVNode;
+    FreeMindViewer.FMVNode = FMVNode;
     class FMVRootNode extends FMVNode {
         constructor(ctx, content) {
             super(null, ctx, content, "root", false);
@@ -145,11 +145,11 @@ var Freemindtesting;
             super.drawFMVNode();
         }
         setPosition(_previousSiblingsWeight) {
-            this.posX = Freemindtesting.rootNodeX;
-            this.posY = Freemindtesting.rootNodeY;
+            this.posX = FreeMindViewer.rootNodeX;
+            this.posY = FreeMindViewer.rootNodeY;
             super.setPosition(_previousSiblingsWeight);
         }
     }
-    Freemindtesting.FMVRootNode = FMVRootNode;
-})(Freemindtesting || (Freemindtesting = {}));
+    FreeMindViewer.FMVRootNode = FMVRootNode;
+})(FreeMindViewer || (FreeMindViewer = {}));
 //# sourceMappingURL=fmvNode.js.map

@@ -1,4 +1,4 @@
-namespace Freemindtesting {
+namespace FreeMindViewer {
 
   export class FMVNode {
     public pfadrect: Path2D;
