@@ -46,7 +46,6 @@ namespace FreeMindViewer {
       rootNode = docNode.firstElementChild;
       if (params.list == "true") {
         //createList();
-        //<----------------------------------------------------------------------Hier wird nichts gemacht------------------------------------------------------>
       } else if (params.list == "false" || !params.list) {
         createCanvas();
         createMindmap();
@@ -70,11 +69,9 @@ namespace FreeMindViewer {
 
   function createCanvas(): void {
 
-    //<----------------------------------------------------------------------querySelector------------------------------------------------------>
     canvas = document.getElementsByTagName("canvas")[0];
     /* canvas = document.createElement("canvas");
     canvas.id = "fmcanvas"; */
-    //<----------------------------------------------------------------------Doppelt??? (Zeile 91 & 92)------------------------------------------------------>
     canvas.setAttribute("height", "window.innerHeight");
     canvas.setAttribute("width", "window.innerWidth");
     //body.appendChild(canvas);
@@ -92,7 +89,6 @@ namespace FreeMindViewer {
 
     // Eventlistener for draggable canvas
     //canvas.addEventListener("mousedown", handleMouseDown);
-    //<----------------------------------------------------------------------Funktion------------------------------------------------------>
     canvas.addEventListener("mousemove", onPointerMove);
     canvas.addEventListener("mousedown", onMouseDown);
     canvas.addEventListener("mouseup", onMouseUp);
@@ -101,7 +97,6 @@ namespace FreeMindViewer {
     canvas.addEventListener("touchend", handleEnd, false);
     canvas.addEventListener("touchcancel", handleCancel, false);
     canvas.addEventListener("touchmove", handleMove, false);
-    //<----------------------------------------------------------------------Funktion------------------------------------------------------>
     //  canvas.addEventListener("touchend",)
 
   }
@@ -118,7 +113,6 @@ namespace FreeMindViewer {
     // create root FMVNode
     root = new FMVRootNode(
       ctx,
-      //<----------------------------------------------------------------------Komma weg------------------------------------------------------>
       rootNode.getAttribute("TEXT")
     );
     fmvNodes.push(root);
@@ -139,7 +133,6 @@ namespace FreeMindViewer {
 
       for (let i: number = 0; i < children.length; i++) {
         // use only children with rootNode as parent
-        //<----------------------------------------------------------------------Wurde in "getChildElements" schon abgefragt------------------------------------------------------>
         if (children[i].parentElement == rootNode) {
           let fmvNodeContent: string = children[i].getAttribute("TEXT");
           let fmvNodeMapPosition: string = children[i].getAttribute("POSITION");
@@ -175,7 +168,6 @@ namespace FreeMindViewer {
     let childElements: Element[] = new Array();
     // get all children of parent as Element collection. Gets ALL children!
     childElementsCollection = parent.getElementsByTagName("node");
-    //<----------------------------------------------------------------------Es werden durch ALLE Elemente iteriert------------------------------------------------------>
     for (let i: number = 0; i < childElementsCollection.length; i++) {
       if (childElementsCollection[i].parentElement == parent) {
         // save only the children with correct parent element

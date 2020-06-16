@@ -39,7 +39,6 @@ var FreeMindViewer;
             rootNode = docNode.firstElementChild;
             if (params.list == "true") {
                 //createList();
-                //<----------------------------------------------------------------------Hier wird nichts gemacht------------------------------------------------------>
             }
             else if (params.list == "false" || !params.list) {
                 createCanvas();
@@ -61,11 +60,9 @@ var FreeMindViewer;
         return new DOMParser().parseFromString(xString, "text/xml");
     }
     function createCanvas() {
-        //<----------------------------------------------------------------------querySelector------------------------------------------------------>
         canvas = document.getElementsByTagName("canvas")[0];
         /* canvas = document.createElement("canvas");
         canvas.id = "fmcanvas"; */
-        //<----------------------------------------------------------------------Doppelt??? (Zeile 91 & 92)------------------------------------------------------>
         canvas.setAttribute("height", "window.innerHeight");
         canvas.setAttribute("width", "window.innerWidth");
         //body.appendChild(canvas);
@@ -78,7 +75,6 @@ var FreeMindViewer;
         FreeMindViewer.rootNodeY = ctx.canvas.height / 2;
         // Eventlistener for draggable canvas
         //canvas.addEventListener("mousedown", handleMouseDown);
-        //<----------------------------------------------------------------------Funktion------------------------------------------------------>
         canvas.addEventListener("mousemove", onPointerMove);
         canvas.addEventListener("mousedown", onMouseDown);
         canvas.addEventListener("mouseup", onMouseUp);
@@ -87,7 +83,6 @@ var FreeMindViewer;
         canvas.addEventListener("touchend", handleEnd, false);
         canvas.addEventListener("touchcancel", handleCancel, false);
         canvas.addEventListener("touchmove", handleMove, false);
-        //<----------------------------------------------------------------------Funktion------------------------------------------------------>
         //  canvas.addEventListener("touchend",)
     }
     function resizecanvas() {
@@ -98,9 +93,7 @@ var FreeMindViewer;
         clearMap();
         fmvNodes.length = 0;
         // create root FMVNode
-        root = new FreeMindViewer.FMVRootNode(ctx, 
-        //<----------------------------------------------------------------------Komma weg------------------------------------------------------>
-        rootNode.getAttribute("TEXT"));
+        root = new FreeMindViewer.FMVRootNode(ctx, rootNode.getAttribute("TEXT"));
         fmvNodes.push(root);
         // Use root FMVNode as starting point and create all subFMVNodes
         createFMVNodes(rootNode, root);
@@ -116,7 +109,6 @@ var FreeMindViewer;
             let childFMVNodes = new Array();
             for (let i = 0; i < children.length; i++) {
                 // use only children with rootNode as parent
-                //<----------------------------------------------------------------------Wurde in "getChildElements" schon abgefragt------------------------------------------------------>
                 if (children[i].parentElement == rootNode) {
                     let fmvNodeContent = children[i].getAttribute("TEXT");
                     let fmvNodeMapPosition = children[i].getAttribute("POSITION");
@@ -143,7 +135,6 @@ var FreeMindViewer;
         let childElements = new Array();
         // get all children of parent as Element collection. Gets ALL children!
         childElementsCollection = parent.getElementsByTagName("node");
-        //<----------------------------------------------------------------------Es werden durch ALLE Elemente iteriert------------------------------------------------------>
         for (let i = 0; i < childElementsCollection.length; i++) {
             if (childElementsCollection[i].parentElement == parent) {
                 // save only the children with correct parent element
