@@ -101,12 +101,12 @@ namespace Freemindtesting {
 
         this.pfadrect = new Path2D();
         this.pfadrect.rect(startX, this.posY + 5, -this.contentWidth, -25);
-        this.ctx.stroke(this.pfadrect);
+        // this.ctx.stroke(this.pfadrect);
       } else if (this.mapPosition == "right") {
         startX = this.posX;
         this.pfadrect = new Path2D();
         this.pfadrect.rect(startX, this.posY + 5, this.contentWidth, -25);
-        this.ctx.stroke(this.pfadrect);
+        // this.ctx.stroke(this.pfadrect);
       }
       if (this.parent) {
 

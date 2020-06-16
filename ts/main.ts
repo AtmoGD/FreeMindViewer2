@@ -48,10 +48,8 @@ namespace Freemindtesting {
         //createList();
         //<----------------------------------------------------------------------Hier wird nichts gemacht------------------------------------------------------>
       } else if (params.list == "false" || !params.list) {
-
         createCanvas();
         createMindmap();
-
       }
     });
     //document.getElementById('hideit').addEventListener('click', toggleHide);
@@ -111,7 +109,6 @@ namespace Freemindtesting {
     createCanvas();
 
     root.drawFMVNode();
-
   }
 
   function createMindmap(): void {
