@@ -1,0 +1,23 @@
+{
+  "name": "freemindviewer2",
+  "version": "0.1.0",
+  "description": "- Usage   - call index.html   - with get-parameters     - path (path to folder containing the mindmap-file)     - map (name of the file including extension \".mm\")     - list (boolean to show data as list or as mindmap)   - example     - ..../index.html?path=/mm&map=README.mm&list=false     - shows map \"README\" in mm folder as mindmap",
+  "main": "/js/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AionixX/FreeMindViewer2.git"
+  },
+  "author": "Dennis Hawran",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AionixX/FreeMindViewer2/issues"
+  },
+  "homepage": "https://github.com/AionixX/FreeMindViewer2#readme",
+  "dependencies": {
+    "@octokit/auth": "^2.0.0",
+    "@octokit/rest": "^18.0.0"
+  }
+}
