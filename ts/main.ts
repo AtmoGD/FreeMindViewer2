@@ -53,6 +53,11 @@ namespace FreeMindViewer {
     });
     //document.getElementById('hideit').addEventListener('click', toggleHide);
     window.addEventListener("resize", resizecanvas, false);
+    document.querySelector("#loginOutbutton").addEventListener("click", authorize);
+  }
+
+  async function login(): Promise<void> {
+
   }
 
   async function fetchXML(): Promise<void> {

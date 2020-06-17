@@ -47,6 +47,11 @@ var FreeMindViewer;
         });
         //document.getElementById('hideit').addEventListener('click', toggleHide);
         window.addEventListener("resize", resizecanvas, false);
+        document.querySelector("#loginOutbutton").addEventListener("click", FreeMindViewer.authorize);
+    }
+    function login() {
+        return __awaiter(this, void 0, void 0, function* () {
+        });
     }
     function fetchXML() {
         return __awaiter(this, void 0, void 0, function* () {
