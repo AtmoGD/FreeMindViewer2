@@ -22,9 +22,16 @@ var FreeMindViewer;
     let fmvNodes;
     let hasMouseBeenMoved = false;
     //let url: string;
+    //TODO: Github repo browser schauen -> Gibts nicht
+    //URL schauen ob man die direkt benutzen kann -> Geht nicht!
+    //TODO GAmeZone überarbeiten -> Tag der Medien -> Muss durchgeschaut werden -> Mit Markus zusammensetzen -> Spiele überprüfen -> Unity Games raus schmeißen (Außer sie laufen mit WebGL) -> Nicht funktionierende raus schmeißen -> 
     function init() {
         fmvNodes = [];
         params = getUrlSearchJson();
+        if (FreeMindViewer.getCookie("at"))
+            FreeMindViewer.login();
+        else if (params.code && params.state)
+            FreeMindViewer.fetchAccesstokenAndLogin(params.code, params.state);
         if (params.list == undefined) {
             params.list = "false";
         }
@@ -48,10 +55,6 @@ var FreeMindViewer;
         //document.getElementById('hideit').addEventListener('click', toggleHide);
         window.addEventListener("resize", resizecanvas, false);
         document.querySelector("#loginOutbutton").addEventListener("click", FreeMindViewer.authorize);
-    }
-    function login() {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
     }
     function fetchXML() {
         return __awaiter(this, void 0, void 0, function* () {

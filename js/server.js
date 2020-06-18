@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const HTTP = require("http");
 const Url = require("url");
 const auth_1 = require("@octokit/auth");
+const rest_1 = require("@octokit/rest");
 const CLIENT_ID = "47db66f43b3e5e0c0b25";
 const CLIENT_SECRET = "d1abfd3be9efe995399faad6a2f947b2dc4149a9";
 const SCOPE = "repo, user";
@@ -38,6 +39,10 @@ var FreeMindViewer;
                             break;
                         case "fetchToken":
                             yield fetchToken(_request, _response, parameters);
+                            break;
+                        case "fetchUsername":
+                            yield fetchUsername(_request, _response, parameters);
+                            break;
                     }
                 }
             }
@@ -90,6 +95,19 @@ var FreeMindViewer;
             else {
                 _response.write("Err:#10002: No token or state provided");
             }
+        });
+    }
+    function fetchUsername(_request, _response, _parameters) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!_parameters.at) {
+                _response.write("Err:#10003: No token provided");
+                return;
+            }
+            const octokit = new rest_1.Octokit({
+                auth: _parameters.at
+            });
+            let name = (yield octokit.users.getAuthenticated()).data.login;
+            _response.write(name);
         });
     }
 })(FreeMindViewer || (FreeMindViewer = {}));

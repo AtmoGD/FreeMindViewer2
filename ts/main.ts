@@ -1,6 +1,8 @@
 namespace FreeMindViewer {
 
   interface URLObject {
+    code: string;
+    state: string;
     path: string;
     map: string;
     list: string;
@@ -27,10 +29,21 @@ namespace FreeMindViewer {
 
   //let url: string;
 
+  //TODO: Github repo browser schauen -> Gibts nicht
+  //URL schauen ob man die direkt benutzen kann -> Geht nicht!
+  //TODO GAmeZone überarbeiten -> Tag der Medien -> Muss durchgeschaut werden -> Mit Markus zusammensetzen -> Spiele überprüfen -> Unity Games raus schmeißen (Außer sie laufen mit WebGL) -> Nicht funktionierende raus schmeißen -> 
+
+
   function init(): void {
     fmvNodes = [];
 
     params = getUrlSearchJson();
+
+    if (getCookie("at"))
+      login();
+    else if (params.code && params.state)
+      fetchAccesstokenAndLogin(params.code, params.state);
+
     if (params.list == undefined) {
       params.list = "false";
     }
@@ -54,10 +67,6 @@ namespace FreeMindViewer {
     //document.getElementById('hideit').addEventListener('click', toggleHide);
     window.addEventListener("resize", resizecanvas, false);
     document.querySelector("#loginOutbutton").addEventListener("click", authorize);
-  }
-
-  async function login(): Promise<void> {
-
   }
 
   async function fetchXML(): Promise<void> {

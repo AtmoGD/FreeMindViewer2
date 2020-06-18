@@ -17,7 +17,7 @@ var FreeMindViewer;
     function fetchAccesstokenAndLogin(_code, _state) {
         return __awaiter(this, void 0, void 0, function* () {
             if (yield fetchAccesstoken(_code, _state)) {
-                // await login();
+                login();
             }
             else {
                 console.error("Error#02: Not able to fetch accesstoken");
@@ -26,6 +26,23 @@ var FreeMindViewer;
         });
     }
     FreeMindViewer.fetchAccesstokenAndLogin = fetchAccesstokenAndLogin;
+    function login() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let username = yield fetchUsername();
+            let userSpan = document.querySelector("#userName");
+            userSpan.innerText = username;
+        });
+    }
+    FreeMindViewer.login = login;
+    function fetchUsername() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let url = "http://localhost:5001?a=fetchUsername&at=" + getCookie("at");
+            let response = yield fetch(url);
+            let username = yield response.text();
+            return username ? username : "Not able to fetch Username";
+        });
+    }
+    FreeMindViewer.fetchUsername = fetchUsername;
     function fetchAccesstoken(_code, _state) {
         return __awaiter(this, void 0, void 0, function* () {
             let url = "http://localhost:5001/?a=fetchToken&code=" + _code + "&state=" + _state;

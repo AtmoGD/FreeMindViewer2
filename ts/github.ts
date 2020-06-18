@@ -6,7 +6,7 @@ namespace FreeMindViewer {
 
   export async function fetchAccesstokenAndLogin(_code: string, _state: string): Promise<void> {
     if (await fetchAccesstoken(_code, _state)) {
-      // await login();
+      login();
     }
     else {
       console.error("Error#02: Not able to fetch accesstoken");
@@ -14,6 +14,19 @@ namespace FreeMindViewer {
     }
   }
 
+  export async function login(): Promise<void> {
+    let username: string = await fetchUsername();    
+    let userSpan: HTMLSpanElement = document.querySelector("#userName");
+    userSpan.innerText = username;
+  }
+
+  export async function fetchUsername(): Promise<string> {
+    let url: string = "http://localhost:5001?a=fetchUsername&at=" + getCookie("at");
+    let response: Response = await fetch(url);
+    let username: string = await response.text();
+
+    return username ? username : "Not able to fetch Username";
+  }
   export async function fetchAccesstoken(_code: string, _state: string): Promise<boolean> {
     let url: string = "http://localhost:5001/?a=fetchToken&code=" + _code + "&state=" + _state;
     let response: Response = await fetch(url);

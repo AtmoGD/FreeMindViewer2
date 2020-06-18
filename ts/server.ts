@@ -53,6 +53,10 @@ namespace FreeMindViewer {
             break;
           case "fetchToken":
             await fetchToken(_request, _response, parameters);
+            break;
+          case "fetchUsername":
+            await fetchUsername(_request, _response, parameters);
+            break;
         }
       }
     }
@@ -110,5 +114,21 @@ namespace FreeMindViewer {
     else {
       _response.write("Err:#10002: No token or state provided");
     }
+  }
+  
+  async function fetchUsername(_request: HTTP.IncomingMessage, _response: HTTP.ServerResponse, _parameters: Parameters): Promise<void> {
+
+    if (!_parameters.at) {
+      _response.write("Err:#10003: No token provided");
+      return;
+    }
+
+    const octokit = new Octokit({
+      auth: _parameters.at
+    });
+
+    let name: string = (await octokit.users.getAuthenticated()).data.login;
+
+    _response.write(name);
   }
 }
