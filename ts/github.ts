@@ -15,9 +15,23 @@ namespace FreeMindViewer {
   }
 
   export async function login(): Promise<void> {
-    let username: string = await fetchUsername();    
+    let username: string = await fetchUsername();
     let userSpan: HTMLSpanElement = document.querySelector("#userName");
     userSpan.innerText = username;
+  }
+
+  export async function fetchFile(): Promise<void> {
+    let owner: string = (<HTMLInputElement>document.querySelector("#ownerInput"))?.value;
+    let repo: string = (<HTMLInputElement>document.querySelector("#repoInput"))?.value;
+    let path: string = (<HTMLInputElement>document.querySelector("#pathInput"))?.value;
+
+    if (owner == "" || repo == "" || path == "")
+      return;
+
+    let url: string = "http://localhost:5001?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path;
+
+    let res = await fetch(url);
+    fetchXML(await res.text());
   }
 
   export async function fetchUsername(): Promise<string> {
@@ -67,10 +81,10 @@ namespace FreeMindViewer {
   export function deleteCookie(_name: string): void {
     const date: Date = new Date();
     date.setTime(date.getTime() - 1000);
-    
+
     document.cookie = _name + "=" + "; expires=" + date.toUTCString() + "; path=/";  // use string template
   }
-  
+
   function generateState(_length: number): string {
     let result: string = "";
     let characters: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";  // char functions exist

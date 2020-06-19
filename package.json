@@ -18,6 +18,8 @@
   "homepage": "https://github.com/AionixX/FreeMindViewer2#readme",
   "dependencies": {
     "@octokit/auth": "^2.0.0",
-    "@octokit/rest": "^18.0.0"
+    "@octokit/rest": "^18.0.0",
+    "@types/node": "^14.0.13",
+    "typescript": "^3.9.5"
   }
 }

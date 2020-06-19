@@ -41,7 +41,24 @@ var FreeMindViewer;
             params.list = "false";
         }
         //url = params.path + "/" + params.map;
-        fetchXML().then(() => {
+        fetchXML();
+        // fetchXML().then(() => {
+        //   docNode = mindmapData.documentElement;
+        //   rootNode = docNode.firstElementChild;
+        //   if (params.list == "true") {
+        //     //createList();
+        //   } else if (params.list == "false" || !params.list) {
+        //     createCanvas();
+        //     createMindmap();
+        //   }
+        // });
+        //document.getElementById('hideit').addEventListener('click', toggleHide);
+        window.addEventListener("resize", resizecanvas, false);
+        document.querySelector("#loginOutbutton").addEventListener("click", FreeMindViewer.authorize);
+        document.querySelector("#fetchFileButton").addEventListener("click", FreeMindViewer.fetchFile);
+    }
+    function loadData() {
+        return __awaiter(this, void 0, void 0, function* () {
             docNode = mindmapData.documentElement;
             rootNode = docNode.firstElementChild;
             if (params.list == "true") {
@@ -52,17 +69,20 @@ var FreeMindViewer;
                 createMindmap();
             }
         });
-        //document.getElementById('hideit').addEventListener('click', toggleHide);
-        window.addEventListener("resize", resizecanvas, false);
-        document.querySelector("#loginOutbutton").addEventListener("click", FreeMindViewer.authorize);
     }
-    function fetchXML() {
+    function fetchXML(_path) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch(params.path + "/" + params.map);
+            let response = null;
+            if (_path)
+                response = yield fetch(_path);
+            else
+                response = yield fetch(params.path + "/" + params.map);
             const xmlText = yield response.text();
             mindmapData = StringToXML(xmlText); // Save xml in letiable
+            loadData();
         });
     }
+    FreeMindViewer.fetchXML = fetchXML;
     // parses a string to XML
     function StringToXML(xString) {
         return new DOMParser().parseFromString(xString, "text/xml");

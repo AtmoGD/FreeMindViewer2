@@ -54,26 +54,46 @@ namespace FreeMindViewer {
     }
     //url = params.path + "/" + params.map;
 
-    fetchXML().then(() => {
-      docNode = mindmapData.documentElement;
-      rootNode = docNode.firstElementChild;
-      if (params.list == "true") {
-        //createList();
-      } else if (params.list == "false" || !params.list) {
-        createCanvas();
-        createMindmap();
-      }
-    });
+    fetchXML();
+
+    // fetchXML().then(() => {
+    //   docNode = mindmapData.documentElement;
+    //   rootNode = docNode.firstElementChild;
+    //   if (params.list == "true") {
+    //     //createList();
+    //   } else if (params.list == "false" || !params.list) {
+    //     createCanvas();
+    //     createMindmap();
+    //   }
+    // });
     //document.getElementById('hideit').addEventListener('click', toggleHide);
     window.addEventListener("resize", resizecanvas, false);
     document.querySelector("#loginOutbutton").addEventListener("click", authorize);
+    document.querySelector("#fetchFileButton").addEventListener("click", fetchFile);
   }
 
-  async function fetchXML(): Promise<void> {
-    const response: Response = await fetch(params.path + "/" + params.map);
+  async function loadData(): Promise<void> {
+    docNode = mindmapData.documentElement;
+    rootNode = docNode.firstElementChild;
+    if (params.list == "true") {
+      //createList();
+    } else if (params.list == "false" || !params.list) {
+      createCanvas();
+      createMindmap();
+    }
+  }
+
+  export async function fetchXML(_path?: string): Promise<void> {
+    let response: Response | null = null;
+    if (_path)
+      response = await fetch(_path);
+    else
+      response = await fetch(params.path + "/" + params.map);
 
     const xmlText: string = await response.text();
     mindmapData = StringToXML(xmlText); // Save xml in letiable
+
+    loadData();
   }
 
   // parses a string to XML

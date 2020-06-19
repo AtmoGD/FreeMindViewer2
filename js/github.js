@@ -34,6 +34,20 @@ var FreeMindViewer;
         });
     }
     FreeMindViewer.login = login;
+    function fetchFile() {
+        var _a, _b, _c;
+        return __awaiter(this, void 0, void 0, function* () {
+            let owner = (_a = document.querySelector("#ownerInput")) === null || _a === void 0 ? void 0 : _a.value;
+            let repo = (_b = document.querySelector("#repoInput")) === null || _b === void 0 ? void 0 : _b.value;
+            let path = (_c = document.querySelector("#pathInput")) === null || _c === void 0 ? void 0 : _c.value;
+            if (owner == "" || repo == "" || path == "")
+                return;
+            let url = "http://localhost:5001?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path;
+            let res = yield fetch(url);
+            FreeMindViewer.fetchXML(yield res.text());
+        });
+    }
+    FreeMindViewer.fetchFile = fetchFile;
     function fetchUsername() {
         return __awaiter(this, void 0, void 0, function* () {
             let url = "http://localhost:5001?a=fetchUsername&at=" + getCookie("at");
