@@ -35,14 +35,15 @@ var FreeMindViewer;
     }
     FreeMindViewer.login = login;
     function fetchFile() {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             let owner = (_a = document.querySelector("#ownerInput")) === null || _a === void 0 ? void 0 : _a.value;
             let repo = (_b = document.querySelector("#repoInput")) === null || _b === void 0 ? void 0 : _b.value;
             let path = (_c = document.querySelector("#pathInput")) === null || _c === void 0 ? void 0 : _c.value;
-            if (owner == "" || repo == "" || path == "")
+            let branch = (_d = document.querySelector("#branchInput")) === null || _d === void 0 ? void 0 : _d.value;
+            if (owner == "" || repo == "" || path == "" || branch == "")
                 return;
-            let url = "http://localhost:5001?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path;
+            let url = "http://localhost:5001?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
             let res = yield fetch(url);
             FreeMindViewer.fetchXML(yield res.text());
         });

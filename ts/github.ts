@@ -24,11 +24,12 @@ namespace FreeMindViewer {
     let owner: string = (<HTMLInputElement>document.querySelector("#ownerInput"))?.value;
     let repo: string = (<HTMLInputElement>document.querySelector("#repoInput"))?.value;
     let path: string = (<HTMLInputElement>document.querySelector("#pathInput"))?.value;
+    let branch: string = (<HTMLInputElement>document.querySelector("#branchInput"))?.value;
 
-    if (owner == "" || repo == "" || path == "")
+    if (owner == "" || repo == "" || path == "" || branch == "")
       return;
 
-    let url: string = "http://localhost:5001?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path;
+    let url: string = "http://localhost:5001?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
 
     let res = await fetch(url);
     fetchXML(await res.text());

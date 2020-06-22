@@ -62,7 +62,8 @@ function getParameters(_url) {
         name: _url.query["owner"] ? _url.query["owner"] : null,
         sha: _url.query["sha"] ? _url.query["sha"] : null,
         state: _url.query["state"] ? _url.query["state"] : null,
-        code: _url.query["code"] ? _url.query["code"] : null
+        code: _url.query["code"] ? _url.query["code"] : null,
+        branch: _url.query["branch"] ? _url.query["branch"] : null
     };
     return parameters;
 }
@@ -122,7 +123,8 @@ function getFile(_request, _response, _parameters) {
         const res = yield octokit.repos.getContent({
             owner: _parameters.name.trim(),
             repo: _parameters.repoName,
-            path: "/" + _parameters.path
+            path: "/" + _parameters.path,
+            ref: _parameters.branch ? _parameters.branch : "master"
         });
         _response.write(res.data.download_url);
     });

@@ -21,6 +21,7 @@ export interface Parameters {
   sha: string | null;
   state: string | null;
   code: string | null;
+  branch: string |null;
 }
 
 const CLIENT_ID: string = "47db66f43b3e5e0c0b25";
@@ -78,7 +79,8 @@ function getParameters(_url: Url.UrlWithParsedQuery): Parameters {
     name: _url.query["owner"] ? <string>_url.query["owner"] : null,
     sha: _url.query["sha"] ? <string>_url.query["sha"] : null,
     state: _url.query["state"] ? <string>_url.query["state"] : null,
-    code: _url.query["code"] ? <string>_url.query["code"] : null
+    code: _url.query["code"] ? <string>_url.query["code"] : null,
+    branch: _url.query["branch"] ? <string>_url.query["branch"] : null
   };
 
   return parameters;
@@ -147,7 +149,8 @@ async function getFile(_request: HTTP.IncomingMessage, _response: HTTP.ServerRes
   const res = await octokit.repos.getContent({
     owner: _parameters.name.trim(),
     repo: _parameters.repoName,
-    path: "/" + _parameters.path
+    path: "/" + _parameters.path,
+    ref: _parameters.branch ? _parameters.branch : "master"
   });
   _response.write(res.data.download_url);
 }
