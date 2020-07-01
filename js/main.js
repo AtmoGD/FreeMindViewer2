@@ -55,7 +55,9 @@ var FreeMindViewer;
         // });
         //document.getElementById('hideit').addEventListener('click', toggleHide);
         window.addEventListener("resize", resizecanvas, false);
-        document.querySelector("#loginOutbutton").addEventListener("click", FreeMindViewer.authorize);
+        FreeMindViewer.loginButton = document.querySelector("#loginOutbutton");
+        FreeMindViewer.loginSpan = document.querySelector("#userName");
+        FreeMindViewer.loginButton.addEventListener("click", FreeMindViewer.authorize);
         document.querySelector("#fetchFileButton").addEventListener("click", FreeMindViewer.fetchFile);
     }
     function loadData() {

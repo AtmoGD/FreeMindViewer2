@@ -16,6 +16,8 @@ namespace FreeMindViewer {
   let ctx: CanvasRenderingContext2D;
   let focusedNode: FMVNode | null;
 
+  export let loginButton: HTMLButtonElement;
+  export let loginSpan: HTMLSpanElement;
   //let ishidden: boolean = true; // canvas sichtbar bei false
 
   export let rootNodeX: number;
@@ -68,7 +70,9 @@ namespace FreeMindViewer {
     // });
     //document.getElementById('hideit').addEventListener('click', toggleHide);
     window.addEventListener("resize", resizecanvas, false);
-    document.querySelector("#loginOutbutton").addEventListener("click", authorize);
+    loginButton = document.querySelector("#loginOutbutton");
+    loginSpan = document.querySelector("#userName");
+    loginButton.addEventListener("click", authorize);
     document.querySelector("#fetchFileButton").addEventListener("click", fetchFile);
   }
 

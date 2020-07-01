@@ -1,7 +1,18 @@
 namespace FreeMindViewer {
   export function authorize(): void {
+    if (loginSpan.innerText != "") {
+      logout();
+      return;
+    }
+
     let state: string = generateAndSaveState(15);
     window.location.href = "http://localhost:5001?a=auth&state=" + state;                      //Tell the server to redirect the client to github
+  }
+
+  export function logout(): void {
+    loginSpan.innerText = "";
+    deleteCookie("at");
+    loginButton.innerText = "Login to Github";
   }
 
   export async function fetchAccesstokenAndLogin(_code: string, _state: string): Promise<void> {
@@ -16,8 +27,8 @@ namespace FreeMindViewer {
 
   export async function login(): Promise<void> {
     let username: string = await fetchUsername();
-    let userSpan: HTMLSpanElement = document.querySelector("#userName");
-    userSpan.innerText = username;
+    loginSpan.innerText = username;
+    loginButton.innerText = "Logout";
   }
 
   export async function fetchFile(): Promise<void> {

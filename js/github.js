@@ -10,10 +10,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var FreeMindViewer;
 (function (FreeMindViewer) {
     function authorize() {
+        if (FreeMindViewer.loginSpan.innerText != "") {
+            logout();
+            return;
+        }
         let state = generateAndSaveState(15);
         window.location.href = "http://localhost:5001?a=auth&state=" + state; //Tell the server to redirect the client to github
     }
     FreeMindViewer.authorize = authorize;
+    function logout() {
+        FreeMindViewer.loginSpan.innerText = "";
+        deleteCookie("at");
+        FreeMindViewer.loginButton.innerText = "Login to Github";
+    }
+    FreeMindViewer.logout = logout;
     function fetchAccesstokenAndLogin(_code, _state) {
         return __awaiter(this, void 0, void 0, function* () {
             if (yield fetchAccesstoken(_code, _state)) {
@@ -29,8 +39,8 @@ var FreeMindViewer;
     function login() {
         return __awaiter(this, void 0, void 0, function* () {
             let username = yield fetchUsername();
-            let userSpan = document.querySelector("#userName");
-            userSpan.innerText = username;
+            FreeMindViewer.loginSpan.innerText = username;
+            FreeMindViewer.loginButton.innerText = "Logout";
         });
     }
     FreeMindViewer.login = login;
