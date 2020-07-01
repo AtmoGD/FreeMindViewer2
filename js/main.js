@@ -190,6 +190,7 @@ var FreeMindViewer;
      } */
     function keyboardInput(_event) {
         //console.log(_event.keyCode);
+        console.log(_event);
         switch (_event.code) {
             case "Space":
                 if (document.activeElement.nodeName.toLowerCase() != "input") {
@@ -260,12 +261,11 @@ var FreeMindViewer;
     }
     function createTextFieldOnNode() {
         let textField = document.createElement("input");
-        textField.type = "text";
-        textField.style.left = "" + focusedNode.posX;
-        textField.style.top = "" + focusedNode.posY;
+        textField.style.position = "absolute";
         textField.style.height = "30";
         textField.style.width = "150";
-        document.body.appendChild(textField);
+        textField.style.display = "block";
+        document.querySelector("#canvasContainer").appendChild(textField);
         console.log("created Text Field");
     }
     function onPointerMove(_event) {
