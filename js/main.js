@@ -188,15 +188,28 @@ var FreeMindViewer;
      } */
     function keyboardInput(_event) {
         //console.log(_event.keyCode);
-        if (_event.code == "Space") {
-            // check if an input is currently in focus
-            if (document.activeElement.nodeName.toLowerCase() != "input") {
-                // prevent default spacebar event (scrolling to bottom)
-                _event.preventDefault();
-                FreeMindViewer.rootNodeX = canvas.width / 2;
-                FreeMindViewer.rootNodeY = canvas.height / 2;
-                redrawWithoutChildren();
-            }
+        switch (_event.code) {
+            case "Space":
+                if (document.activeElement.nodeName.toLowerCase() != "input") {
+                    // prevent default spacebar event (scrolling to bottom)
+                    _event.preventDefault();
+                    FreeMindViewer.rootNodeX = canvas.width / 2;
+                    FreeMindViewer.rootNodeY = canvas.height / 2;
+                    redrawWithoutChildren();
+                }
+                break;
+            case "KeyU":
+                if (focusedNode)
+                    createTextFieldOnNode();
+                break;
+            case "KeyA":
+                if (focusedNode)
+                    console.log("Add");
+                break;
+            case "KeyD":
+                if (focusedNode)
+                    console.log("Delete");
+                break;
         }
     }
     function onMouseDown(_event) {
@@ -206,6 +219,7 @@ var FreeMindViewer;
         if (hasMouseBeenMoved) {
             return;
         }
+        let focused = false;
         if (ctx.isPointInPath(root.pfadrect, _event.clientX, _event.clientY)) {
             root.hiddenFoldedValue = !root.hiddenFoldedValue;
             let newFold = root.hiddenFoldedValue;
@@ -217,17 +231,40 @@ var FreeMindViewer;
             for (let i = 0; i < fmvNodes.length; i++) {
                 //console.log(fmvNodes[i].pfadrect + " pfadrect " + _event.clientX, _event.clientY, i + " i");
                 if (fmvNodes[i].pfadrect) {
-                    if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
-                        focusedNode = fmvNodes[i];
-                        console.log(focusedNode);
+                    if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - 60)) {
+                        focusNode(fmvNodes[i]);
+                        focused = true;
                         fmvNodes[i].folded = !fmvNodes[i].folded;
                     }
                 }
             }
         }
+        if (!focused)
+            focusNode(null);
         root.folded = false;
         root.calculateVisibleChildren();
         redrawWithoutChildren();
+    }
+    function focusNode(_node) {
+        if (focusedNode)
+            focusedNode.strokeStile = "black";
+        if (!_node) {
+            if (focusedNode)
+                focusedNode = null;
+            return;
+        }
+        focusedNode = _node;
+        focusedNode.strokeStile = "blue";
+    }
+    function createTextFieldOnNode() {
+        let textField = document.createElement("input");
+        textField.type = "text";
+        textField.style.left = "" + focusedNode.posX;
+        textField.style.top = "" + focusedNode.posY;
+        textField.style.height = "30";
+        textField.style.width = "150";
+        document.body.appendChild(textField);
+        console.log("created Text Field");
     }
     function onPointerMove(_event) {
         hasMouseBeenMoved = true;

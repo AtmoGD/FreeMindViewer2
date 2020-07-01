@@ -19,7 +19,7 @@ namespace FreeMindViewer {
     public childNumber: number;
     public folded: boolean;
     public childHight: number = 30;
-
+    public strokeStile: string = "black";
 
     constructor(
       parent: FMVNode,
@@ -92,6 +92,7 @@ namespace FreeMindViewer {
     drawFMVNode(): void {
       this.ctx.font = "14px sans-serif";
       this.ctx.fillStyle = "black";
+      this.ctx.strokeStyle = this.strokeStile;
       let startX: number;
       this.contentWidth = this.ctx.measureText(this.content).width;
       //rectangles um den text
