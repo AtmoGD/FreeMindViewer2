@@ -14,7 +14,7 @@ namespace FreeMindViewer {
   //let list: HTMLElement;
   let canvas: HTMLCanvasElement;
   let ctx: CanvasRenderingContext2D;
-
+  let focusedNode: FMVNode | null;
 
   //let ishidden: boolean = true; // canvas sichtbar bei false
 
@@ -228,7 +228,7 @@ namespace FreeMindViewer {
    } */
 
   function keyboardInput(_event: KeyboardEvent): void {
-    console.log(_event.keyCode);
+    //console.log(_event.keyCode);
     if (_event.code == "Space") {
 
       // check if an input is currently in focus
@@ -250,6 +250,8 @@ namespace FreeMindViewer {
       return;
     }
 
+
+
     if (ctx.isPointInPath(root.pfadrect, _event.clientX, _event.clientY)) {
       root.hiddenFoldedValue = !root.hiddenFoldedValue;
       let newFold: boolean = root.hiddenFoldedValue;
@@ -258,11 +260,13 @@ namespace FreeMindViewer {
       }
 
     } else {
-      for (let i: number = 1; i < fmvNodes.length; i++) {
-        console.log(fmvNodes[i].pfadrect + " pfadrect " + _event.clientX, _event.clientY, i + " i");
+      for (let i: number = 0; i < fmvNodes.length; i++) {
+        //console.log(fmvNodes[i].pfadrect + " pfadrect " + _event.clientX, _event.clientY, i + " i");
         if (fmvNodes[i].pfadrect) {
           if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
 
+            focusedNode = fmvNodes[i];
+            console.log(focusedNode);
             fmvNodes[i].folded = !fmvNodes[i].folded;
           }
         }

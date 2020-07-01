@@ -36,12 +36,9 @@ namespace FreeMindViewer {
       this.mapPosition = side;
 
       this.folded = folded;
-
-
     }
 
     setPosition(_previousSiblingsWeight: number): void {
-
       if (this.mapPosition == "right") {
         this.posX = this.parent.posX + this.parent.content.length * 7 + 70;
         this.posY = this.calculateHighestPoint(this.parent.posY, this.parent.weightVisibleChildrenRight, this.childHight, _previousSiblingsWeight, this.weightVisibleChildrenRight);
@@ -63,12 +60,14 @@ namespace FreeMindViewer {
         }
       }
     }
+
     calculateHighestPoint(_parentPositionY: number, _parentWeightVisibleChildren: number, _childHight: number, _previousSiblingsWeight: number, _weightVisibleChildren: number): number {
       let highestPoint: number = _parentPositionY - _parentWeightVisibleChildren * _childHight / 2 + (_childHight / 2);
       let yPx: number = highestPoint + _previousSiblingsWeight * _childHight + (_weightVisibleChildren * _childHight) / 2 - (_childHight / 2);
       this.posY = yPx;
       return yPx;
     }
+    
     calculateVisibleChildren(): number {
       if (this.children.length <= 0 || this.folded) {
         if (this.mapPosition == "right")
@@ -101,12 +100,12 @@ namespace FreeMindViewer {
 
         this.pfadrect = new Path2D();
         this.pfadrect.rect(startX, this.posY + 5, -this.contentWidth, -25);
-        // this.ctx.stroke(this.pfadrect);
+        this.ctx.stroke(this.pfadrect);
       } else if (this.mapPosition == "right") {
         startX = this.posX;
         this.pfadrect = new Path2D();
         this.pfadrect.rect(startX, this.posY + 5, this.contentWidth, -25);
-        // this.ctx.stroke(this.pfadrect);
+        this.ctx.stroke(this.pfadrect);
       }
       if (this.parent) {
 

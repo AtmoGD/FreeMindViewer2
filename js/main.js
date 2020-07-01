@@ -15,6 +15,7 @@ var FreeMindViewer;
     //let list: HTMLElement;
     let canvas;
     let ctx;
+    let focusedNode;
     let mindmapData;
     let docNode; // document node is the first node in a xml file
     let rootNode; // first actual node of the mindmap
@@ -186,7 +187,7 @@ var FreeMindViewer;
        }
      } */
     function keyboardInput(_event) {
-        console.log(_event.keyCode);
+        //console.log(_event.keyCode);
         if (_event.code == "Space") {
             // check if an input is currently in focus
             if (document.activeElement.nodeName.toLowerCase() != "input") {
@@ -213,10 +214,12 @@ var FreeMindViewer;
             }
         }
         else {
-            for (let i = 1; i < fmvNodes.length; i++) {
-                console.log(fmvNodes[i].pfadrect + " pfadrect " + _event.clientX, _event.clientY, i + " i");
+            for (let i = 0; i < fmvNodes.length; i++) {
+                //console.log(fmvNodes[i].pfadrect + " pfadrect " + _event.clientX, _event.clientY, i + " i");
                 if (fmvNodes[i].pfadrect) {
                     if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
+                        focusedNode = fmvNodes[i];
+                        console.log(focusedNode);
                         fmvNodes[i].folded = !fmvNodes[i].folded;
                     }
                 }
