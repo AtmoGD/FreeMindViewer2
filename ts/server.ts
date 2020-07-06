@@ -21,7 +21,7 @@ export interface Parameters {
   sha: string | null;
   state: string | null;
   code: string | null;
-  branch: string |null;
+  branch: string | null;
 }
 
 const CLIENT_ID: string = "47db66f43b3e5e0c0b25";
@@ -60,6 +60,9 @@ async function handleRequest(_request: HTTP.IncomingMessage, _response: HTTP.Ser
           break;
         case "getFile":
           await getFile(_request, _response, parameters);
+          break;
+        case "saveFile":
+          await saveFile(_request, _response, parameters);
           break;
       }
     }
@@ -153,4 +156,57 @@ async function getFile(_request: HTTP.IncomingMessage, _response: HTTP.ServerRes
     ref: _parameters.branch ? _parameters.branch : "master"
   });
   _response.write(res.data.download_url);
+}
+
+async function saveFile(_request: HTTP.IncomingMessage, _response: HTTP.ServerResponse, _parameters: Parameters): Promise<void> {
+
+  if (!_parameters.at || !_parameters.repoName || !_parameters.path || !_parameters.name)
+    return;
+
+  let body: string = "";
+  _request.on("data", (data) => {
+    body += data;
+  });
+
+  const octokit = new Octokit({
+    auth: _parameters.at
+  });
+
+  console.log(body);
+
+  let ref;
+  let res;
+
+  try {
+    ref = await octokit.repos.getContent({
+      owner: _parameters.name,
+      repo: _parameters.repoName,
+      path: _parameters.repoPath
+    });
+  }
+  catch {
+    console.log("No Cntent");
+  }
+  finally {
+    if (ref) {
+      res = await octokit.repos.createOrUpdateFileContents({
+        owner: _parameters.name,
+        repo: _parameters.repoName,
+        path: _parameters.repoPath,
+        message: "update file",
+        content: body,
+        sha: ref.data.sha
+      });
+    }else {
+      res = await octokit.repos.createOrUpdateFileContents({
+        owner: _parameters.name,
+        repo: _parameters.repoName,
+        path: _parameters.repoPath,
+        message: "update file",
+        content: body
+      });
+    }
+    _response.write(res.status.toString());
+  }
+
 }

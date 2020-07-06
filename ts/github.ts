@@ -1,7 +1,18 @@
 namespace FreeMindViewer {
   export function authorize(): void {
+    if (loginSpan.innerText != "") {
+      logout();
+      return;
+    }
+
     let state: string = generateAndSaveState(15);
     window.location.href = "http://localhost:5001?a=auth&state=" + state;                      //Tell the server to redirect the client to github
+  }
+
+  export function logout(): void {
+    loginSpan.innerText = "";
+    deleteCookie("at");
+    loginButton.innerText = "Login to Github";
   }
 
   export async function fetchAccesstokenAndLogin(_code: string, _state: string): Promise<void> {
@@ -16,8 +27,27 @@ namespace FreeMindViewer {
 
   export async function login(): Promise<void> {
     let username: string = await fetchUsername();
-    let userSpan: HTMLSpanElement = document.querySelector("#userName");
-    userSpan.innerText = username;
+    loginSpan.innerText = username;
+    loginButton.innerText = "Logout";
+  }
+
+  export async function saveFile(_file: string): Promise<void> {
+    let owner: string = (<HTMLInputElement>document.querySelector("#ownerInput"))?.value;
+    let repo: string = (<HTMLInputElement>document.querySelector("#repoInput"))?.value;
+    let path: string = (<HTMLInputElement>document.querySelector("#pathInput"))?.value;
+    let branch: string = (<HTMLInputElement>document.querySelector("#branchInput"))?.value;
+
+    if (owner == "" || repo == "" || path == "" || branch == "")
+      return;
+
+    let url: string = "http://localhost:5001?a=saveFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
+
+    let response: Response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: btoa(_file)
+    });
+    console.log(await response.text());
   }
 
   export async function fetchFile(): Promise<void> {

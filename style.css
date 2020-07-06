@@ -6,6 +6,14 @@ body {
   overflow: hidden;
 }
 
+canvas {
+  display: block;
+}
+
+#canvasContainer {
+  position: relative;
+}
+
 hide {
   display: none;
 }

@@ -45,6 +45,9 @@ function handleRequest(_request, _response) {
                     case "getFile":
                         yield getFile(_request, _response, parameters);
                         break;
+                    case "saveFile":
+                        yield saveFile(_request, _response, parameters);
+                        break;
                 }
             }
         }
@@ -127,6 +130,54 @@ function getFile(_request, _response, _parameters) {
             ref: _parameters.branch ? _parameters.branch : "master"
         });
         _response.write(res.data.download_url);
+    });
+}
+function saveFile(_request, _response, _parameters) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!_parameters.at || !_parameters.repoName || !_parameters.path || !_parameters.name)
+            return;
+        let body = "";
+        _request.on("data", (data) => {
+            body += data;
+        });
+        const octokit = new rest_1.Octokit({
+            auth: _parameters.at
+        });
+        console.log(body);
+        let ref;
+        let res;
+        try {
+            ref = yield octokit.repos.getContent({
+                owner: _parameters.name,
+                repo: _parameters.repoName,
+                path: _parameters.repoPath
+            });
+        }
+        catch (_a) {
+            console.log("No Cntent");
+        }
+        finally {
+            if (ref) {
+                res = yield octokit.repos.createOrUpdateFileContents({
+                    owner: _parameters.name,
+                    repo: _parameters.repoName,
+                    path: _parameters.repoPath,
+                    message: "update file",
+                    content: body,
+                    sha: ref.data.sha
+                });
+            }
+            else {
+                res = yield octokit.repos.createOrUpdateFileContents({
+                    owner: _parameters.name,
+                    repo: _parameters.repoName,
+                    path: _parameters.repoPath,
+                    message: "update file",
+                    content: body
+                });
+            }
+            _response.write(res.status.toString());
+        }
     });
 }
 //# sourceMappingURL=server.js.map

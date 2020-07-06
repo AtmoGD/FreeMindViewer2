@@ -19,7 +19,7 @@ namespace FreeMindViewer {
     public childNumber: number;
     public folded: boolean;
     public childHight: number = 30;
-
+    public strokeStile: string = "black";
 
     constructor(
       parent: FMVNode,
@@ -36,12 +36,9 @@ namespace FreeMindViewer {
       this.mapPosition = side;
 
       this.folded = folded;
-
-
     }
 
     setPosition(_previousSiblingsWeight: number): void {
-
       if (this.mapPosition == "right") {
         this.posX = this.parent.posX + this.parent.content.length * 7 + 70;
         this.posY = this.calculateHighestPoint(this.parent.posY, this.parent.weightVisibleChildrenRight, this.childHight, _previousSiblingsWeight, this.weightVisibleChildrenRight);
@@ -63,12 +60,14 @@ namespace FreeMindViewer {
         }
       }
     }
+
     calculateHighestPoint(_parentPositionY: number, _parentWeightVisibleChildren: number, _childHight: number, _previousSiblingsWeight: number, _weightVisibleChildren: number): number {
       let highestPoint: number = _parentPositionY - _parentWeightVisibleChildren * _childHight / 2 + (_childHight / 2);
       let yPx: number = highestPoint + _previousSiblingsWeight * _childHight + (_weightVisibleChildren * _childHight) / 2 - (_childHight / 2);
       this.posY = yPx;
       return yPx;
     }
+    
     calculateVisibleChildren(): number {
       if (this.children.length <= 0 || this.folded) {
         if (this.mapPosition == "right")
@@ -93,6 +92,7 @@ namespace FreeMindViewer {
     drawFMVNode(): void {
       this.ctx.font = "14px sans-serif";
       this.ctx.fillStyle = "black";
+      this.ctx.strokeStyle = this.strokeStile;
       let startX: number;
       this.contentWidth = this.ctx.measureText(this.content).width;
       //rectangles um den text
@@ -101,12 +101,12 @@ namespace FreeMindViewer {
 
         this.pfadrect = new Path2D();
         this.pfadrect.rect(startX, this.posY + 5, -this.contentWidth, -25);
-        // this.ctx.stroke(this.pfadrect);
+        this.ctx.stroke(this.pfadrect);
       } else if (this.mapPosition == "right") {
         startX = this.posX;
         this.pfadrect = new Path2D();
         this.pfadrect.rect(startX, this.posY + 5, this.contentWidth, -25);
-        // this.ctx.stroke(this.pfadrect);
+        this.ctx.stroke(this.pfadrect);
       }
       if (this.parent) {
 

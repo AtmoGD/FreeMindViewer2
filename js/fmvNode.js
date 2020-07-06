@@ -8,6 +8,7 @@ var FreeMindViewer;
             this.bezPtY2 = 0;
             this.contentWidth = 0;
             this.childHight = 30;
+            this.strokeStile = "black";
             this.parent = parent;
             this.children = new Array();
             this.ctx = ctx;
@@ -66,6 +67,7 @@ var FreeMindViewer;
         drawFMVNode() {
             this.ctx.font = "14px sans-serif";
             this.ctx.fillStyle = "black";
+            this.ctx.strokeStyle = this.strokeStile;
             let startX;
             this.contentWidth = this.ctx.measureText(this.content).width;
             //rectangles um den text
@@ -73,13 +75,13 @@ var FreeMindViewer;
                 startX = this.posX;
                 this.pfadrect = new Path2D();
                 this.pfadrect.rect(startX, this.posY + 5, -this.contentWidth, -25);
-                // this.ctx.stroke(this.pfadrect);
+                this.ctx.stroke(this.pfadrect);
             }
             else if (this.mapPosition == "right") {
                 startX = this.posX;
                 this.pfadrect = new Path2D();
                 this.pfadrect.rect(startX, this.posY + 5, this.contentWidth, -25);
-                // this.ctx.stroke(this.pfadrect);
+                this.ctx.stroke(this.pfadrect);
             }
             if (this.parent) {
                 // verbindungslinie von kasten zu kasten
