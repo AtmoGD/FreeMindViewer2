@@ -15,6 +15,7 @@ var FreeMindViewer;
     //let list: HTMLElement;
     let canvas;
     let ctx;
+    let focusedNode;
     let mindmapData;
     let docNode; // document node is the first node in a xml file
     let rootNode; // first actual node of the mindmap
@@ -54,8 +55,17 @@ var FreeMindViewer;
         // });
         //document.getElementById('hideit').addEventListener('click', toggleHide);
         window.addEventListener("resize", resizecanvas, false);
-        document.querySelector("#loginOutbutton").addEventListener("click", FreeMindViewer.authorize);
+        FreeMindViewer.loginButton = document.querySelector("#loginOutbutton");
+        FreeMindViewer.loginSpan = document.querySelector("#userName");
+        FreeMindViewer.loginButton.addEventListener("click", FreeMindViewer.authorize);
         document.querySelector("#fetchFileButton").addEventListener("click", FreeMindViewer.fetchFile);
+        document.querySelector("#saveFileButton").addEventListener("click", uploadFile);
+    }
+    function uploadFile() {
+        FreeMindViewer.saveFile(XMLToString(mindmapData));
+    }
+    function XMLToString(_data) {
+        return new XMLSerializer().serializeToString(_data.documentElement);
     }
     function loadData() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -186,16 +196,30 @@ var FreeMindViewer;
        }
      } */
     function keyboardInput(_event) {
-        console.log(_event.keyCode);
-        if (_event.code == "Space") {
-            // check if an input is currently in focus
-            if (document.activeElement.nodeName.toLowerCase() != "input") {
-                // prevent default spacebar event (scrolling to bottom)
-                _event.preventDefault();
-                FreeMindViewer.rootNodeX = canvas.width / 2;
-                FreeMindViewer.rootNodeY = canvas.height / 2;
-                redrawWithoutChildren();
-            }
+        //console.log(_event.keyCode);
+        console.log(_event);
+        switch (_event.code) {
+            case "Space":
+                if (document.activeElement.nodeName.toLowerCase() != "input") {
+                    // prevent default spacebar event (scrolling to bottom)
+                    _event.preventDefault();
+                    FreeMindViewer.rootNodeX = canvas.width / 2;
+                    FreeMindViewer.rootNodeY = canvas.height / 2;
+                    redrawWithoutChildren();
+                }
+                break;
+            case "F2":
+                if (focusedNode)
+                    createTextFieldOnNode();
+                break;
+            case "KeyA":
+                if (focusedNode)
+                    console.log("Add");
+                break;
+            case "KeyD":
+                if (focusedNode)
+                    console.log("Delete");
+                break;
         }
     }
     function onMouseDown(_event) {
@@ -205,6 +229,7 @@ var FreeMindViewer;
         if (hasMouseBeenMoved) {
             return;
         }
+        let focused = false;
         if (ctx.isPointInPath(root.pfadrect, _event.clientX, _event.clientY)) {
             root.hiddenFoldedValue = !root.hiddenFoldedValue;
             let newFold = root.hiddenFoldedValue;
@@ -213,18 +238,48 @@ var FreeMindViewer;
             }
         }
         else {
-            for (let i = 1; i < fmvNodes.length; i++) {
-                console.log(fmvNodes[i].pfadrect + " pfadrect " + _event.clientX, _event.clientY, i + " i");
+            for (let i = 0; i < fmvNodes.length; i++) {
+                //console.log(fmvNodes[i].pfadrect + " pfadrect " + _event.clientX, _event.clientY, i + " i");
                 if (fmvNodes[i].pfadrect) {
-                    if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
+                    if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - fmvNodes[i].childHight)) {
+                        focusNode(fmvNodes[i]);
+                        focused = true;
                         fmvNodes[i].folded = !fmvNodes[i].folded;
                     }
                 }
             }
         }
+        if (!focused)
+            focusNode(null);
         root.folded = false;
         root.calculateVisibleChildren();
         redrawWithoutChildren();
+    }
+    function focusNode(_node) {
+        if (focusedNode)
+            focusedNode.strokeStile = "black";
+        if (!_node) {
+            if (focusedNode)
+                focusedNode = null;
+            return;
+        }
+        focusedNode = _node;
+        focusedNode.strokeStile = "blue";
+    }
+    function createTextFieldOnNode() {
+        if (!focusedNode)
+            return;
+        let textField = document.createElement("input");
+        textField.style.position = "fixed";
+        textField.style.left = focusedNode.posX + "px";
+        textField.style.top = focusedNode.posY + 25 + "px";
+        document.querySelector("#canvasContainer").appendChild(textField);
+        textField.focus();
+        textField.onblur = updateNode;
+        function updateNode() {
+            focusedNode.content = textField.value;
+            textField.remove();
+        }
     }
     function onPointerMove(_event) {
         hasMouseBeenMoved = true;

@@ -10,10 +10,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var FreeMindViewer;
 (function (FreeMindViewer) {
     function authorize() {
+        if (FreeMindViewer.loginSpan.innerText != "") {
+            logout();
+            return;
+        }
         let state = generateAndSaveState(15);
         window.location.href = "http://localhost:5001?a=auth&state=" + state; //Tell the server to redirect the client to github
     }
     FreeMindViewer.authorize = authorize;
+    function logout() {
+        FreeMindViewer.loginSpan.innerText = "";
+        deleteCookie("at");
+        FreeMindViewer.loginButton.innerText = "Login to Github";
+    }
+    FreeMindViewer.logout = logout;
     function fetchAccesstokenAndLogin(_code, _state) {
         return __awaiter(this, void 0, void 0, function* () {
             if (yield fetchAccesstoken(_code, _state)) {
@@ -29,11 +39,30 @@ var FreeMindViewer;
     function login() {
         return __awaiter(this, void 0, void 0, function* () {
             let username = yield fetchUsername();
-            let userSpan = document.querySelector("#userName");
-            userSpan.innerText = username;
+            FreeMindViewer.loginSpan.innerText = username;
+            FreeMindViewer.loginButton.innerText = "Logout";
         });
     }
     FreeMindViewer.login = login;
+    function saveFile(_file) {
+        var _a, _b, _c, _d;
+        return __awaiter(this, void 0, void 0, function* () {
+            let owner = (_a = document.querySelector("#ownerInput")) === null || _a === void 0 ? void 0 : _a.value;
+            let repo = (_b = document.querySelector("#repoInput")) === null || _b === void 0 ? void 0 : _b.value;
+            let path = (_c = document.querySelector("#pathInput")) === null || _c === void 0 ? void 0 : _c.value;
+            let branch = (_d = document.querySelector("#branchInput")) === null || _d === void 0 ? void 0 : _d.value;
+            if (owner == "" || repo == "" || path == "" || branch == "")
+                return;
+            let url = "http://localhost:5001?a=saveFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
+            let response = yield fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain" },
+                body: btoa(_file)
+            });
+            console.log(yield response.text());
+        });
+    }
+    FreeMindViewer.saveFile = saveFile;
     function fetchFile() {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
