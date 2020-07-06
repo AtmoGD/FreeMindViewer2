@@ -84,6 +84,7 @@ namespace FreeMindViewer {
   function XMLToString(_data: XMLDocument): string {
     return new XMLSerializer().serializeToString(_data.documentElement);
   }
+  
   async function loadData(): Promise<void> {
     docNode = mindmapData.documentElement;
     rootNode = docNode.firstElementChild;
@@ -196,6 +197,7 @@ namespace FreeMindViewer {
             fmvNodeMapPosition,
             fmvNodeFoldedBool
           );
+          fmvNode.node = children[i];
           childFMVNodes.push(fmvNode);
           fmvNodes.push(fmvNode);
           parentFMVNode.children = childFMVNodes;
@@ -336,8 +338,10 @@ namespace FreeMindViewer {
     textField.onblur = updateNode;
 
     function updateNode(): void {
-      focusedNode.content = textField.value;
+      focusedNode.node.setAttribute("TEXT", textField.value);
+      // focusedNode.content = textField.value;
       textField.remove();
+      loadData();
     }
   }
 

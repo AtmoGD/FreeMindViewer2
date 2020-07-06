@@ -5,6 +5,7 @@ namespace FreeMindViewer {
     public parent: FMVNode;
     public children: FMVNode[];
     public ctx: CanvasRenderingContext2D;
+    public node: Element;
     public content: string;
     public weightVisibleChildrenRight: number;
     public weightVisibleChildrenLeft: number;

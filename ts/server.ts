@@ -168,6 +168,10 @@ async function saveFile(_request: HTTP.IncomingMessage, _response: HTTP.ServerRe
     body += data;
   });
 
+  _request.on("end", () => {
+    console.log("done");
+  });
+
   const octokit = new Octokit({
     auth: _parameters.at
   });

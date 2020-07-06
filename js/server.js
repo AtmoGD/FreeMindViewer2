@@ -140,6 +140,9 @@ function saveFile(_request, _response, _parameters) {
         _request.on("data", (data) => {
             body += data;
         });
+        _request.on("end", () => {
+            console.log("done");
+        });
         const octokit = new rest_1.Octokit({
             auth: _parameters.at
         });

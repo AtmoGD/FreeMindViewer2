@@ -156,6 +156,7 @@ var FreeMindViewer;
                     let fmvNodeFolded = children[i].getAttribute("FOLDED");
                     let fmvNodeFoldedBool = fmvNodeFolded == "true" ? true : false;
                     let fmvNode = new FreeMindViewer.FMVNode(parentFMVNode, ctx, fmvNodeContent, fmvNodeMapPosition, fmvNodeFoldedBool);
+                    fmvNode.node = children[i];
                     childFMVNodes.push(fmvNode);
                     fmvNodes.push(fmvNode);
                     parentFMVNode.children = childFMVNodes;
@@ -277,8 +278,10 @@ var FreeMindViewer;
         textField.focus();
         textField.onblur = updateNode;
         function updateNode() {
-            focusedNode.content = textField.value;
+            focusedNode.node.setAttribute("TEXT", textField.value);
+            // focusedNode.content = textField.value;
             textField.remove();
+            loadData();
         }
     }
     function onPointerMove(_event) {
