@@ -59,6 +59,13 @@ var FreeMindViewer;
         FreeMindViewer.loginSpan = document.querySelector("#userName");
         FreeMindViewer.loginButton.addEventListener("click", FreeMindViewer.authorize);
         document.querySelector("#fetchFileButton").addEventListener("click", FreeMindViewer.fetchFile);
+        document.querySelector("#saveFileButton").addEventListener("click", uploadFile);
+    }
+    function uploadFile() {
+        FreeMindViewer.saveFile(XMLToString(mindmapData));
+    }
+    function XMLToString(_data) {
+        return new XMLSerializer().serializeToString(_data.documentElement);
     }
     function loadData() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -201,7 +208,7 @@ var FreeMindViewer;
                     redrawWithoutChildren();
                 }
                 break;
-            case "KeyU":
+            case "F2":
                 if (focusedNode)
                     createTextFieldOnNode();
                 break;
@@ -234,7 +241,7 @@ var FreeMindViewer;
             for (let i = 0; i < fmvNodes.length; i++) {
                 //console.log(fmvNodes[i].pfadrect + " pfadrect " + _event.clientX, _event.clientY, i + " i");
                 if (fmvNodes[i].pfadrect) {
-                    if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - 60)) {
+                    if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - fmvNodes[i].childHight)) {
                         focusNode(fmvNodes[i]);
                         focused = true;
                         fmvNodes[i].folded = !fmvNodes[i].folded;
@@ -260,13 +267,19 @@ var FreeMindViewer;
         focusedNode.strokeStile = "blue";
     }
     function createTextFieldOnNode() {
+        if (!focusedNode)
+            return;
         let textField = document.createElement("input");
-        textField.style.position = "absolute";
-        textField.style.height = "30";
-        textField.style.width = "150";
-        textField.style.display = "block";
+        textField.style.position = "fixed";
+        textField.style.left = focusedNode.posX + "px";
+        textField.style.top = focusedNode.posY + 25 + "px";
         document.querySelector("#canvasContainer").appendChild(textField);
-        console.log("created Text Field");
+        textField.focus();
+        textField.onblur = updateNode;
+        function updateNode() {
+            focusedNode.content = textField.value;
+            textField.remove();
+        }
     }
     function onPointerMove(_event) {
         hasMouseBeenMoved = true;

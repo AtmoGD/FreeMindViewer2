@@ -31,6 +31,25 @@ namespace FreeMindViewer {
     loginButton.innerText = "Logout";
   }
 
+  export async function saveFile(_file: string): Promise<void> {
+    let owner: string = (<HTMLInputElement>document.querySelector("#ownerInput"))?.value;
+    let repo: string = (<HTMLInputElement>document.querySelector("#repoInput"))?.value;
+    let path: string = (<HTMLInputElement>document.querySelector("#pathInput"))?.value;
+    let branch: string = (<HTMLInputElement>document.querySelector("#branchInput"))?.value;
+
+    if (owner == "" || repo == "" || path == "" || branch == "")
+      return;
+
+    let url: string = "http://localhost:5001?a=saveFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
+
+    let response: Response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: btoa(_file)
+    });
+    console.log(await response.text());
+  }
+
   export async function fetchFile(): Promise<void> {
     let owner: string = (<HTMLInputElement>document.querySelector("#ownerInput"))?.value;
     let repo: string = (<HTMLInputElement>document.querySelector("#repoInput"))?.value;
