@@ -185,11 +185,12 @@ async function saveFile(_request: HTTP.IncomingMessage, _response: HTTP.ServerRe
     ref = await octokit.repos.getContent({
       owner: _parameters.name,
       repo: _parameters.repoName,
-      path: _parameters.repoPath
+      path: _parameters.repoPath,
+      ref: _parameters.branch ? _parameters.branch : "master"
     });
   }
-  catch {
-    console.log("No Cntent");
+  catch (e) {
+    console.log("No Cntent" + e);
   }
   finally {
     if (ref) {
@@ -199,7 +200,8 @@ async function saveFile(_request: HTTP.IncomingMessage, _response: HTTP.ServerRe
         path: _parameters.repoPath,
         message: "update file",
         content: body,
-        sha: ref.data.sha
+        sha: ref.data.sha,
+        branch: _parameters.branch ? _parameters.branch : "master"
       });
     }else {
       res = await octokit.repos.createOrUpdateFileContents({
@@ -207,7 +209,8 @@ async function saveFile(_request: HTTP.IncomingMessage, _response: HTTP.ServerRe
         repo: _parameters.repoName,
         path: _parameters.repoPath,
         message: "update file",
-        content: body
+        content: body,
+        branch: _parameters.branch ? _parameters.branch : "master"
       });
     }
     _response.write(res.status.toString());

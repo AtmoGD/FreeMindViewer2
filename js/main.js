@@ -23,9 +23,6 @@ var FreeMindViewer;
     let fmvNodes;
     let hasMouseBeenMoved = false;
     //let url: string;
-    //TODO: Github repo browser schauen -> Gibts nicht
-    //URL schauen ob man die direkt benutzen kann -> Geht nicht!
-    //TODO GAmeZone überarbeiten -> Tag der Medien -> Muss durchgeschaut werden -> Mit Markus zusammensetzen -> Spiele überprüfen -> Unity Games raus schmeißen (Außer sie laufen mit WebGL) -> Nicht funktionierende raus schmeißen -> 
     function init() {
         fmvNodes = [];
         params = getUrlSearchJson();
@@ -213,39 +210,68 @@ var FreeMindViewer;
                 if (focusedNode)
                     createTextFieldOnNode();
                 break;
-            case "KeyA":
+            case "ArrowUp":
                 if (focusedNode)
-                    console.log("Add");
+                    focusSibling(-1);
                 break;
-            case "KeyD":
+            case "ArrowDown":
                 if (focusedNode)
-                    console.log("Delete");
+                    focusSibling(1);
+                break;
+            case "ArrowLeft":
+                if (focusedNode)
+                    focusParent(-1);
+                break;
+            case "ArrowRight":
+                if (focusedNode)
+                    focusParent(1);
                 break;
         }
     }
     function onMouseDown(_event) {
         hasMouseBeenMoved = false;
+        if (focusedNode)
+            return;
+        let focused = false;
+        for (let i = 0; i < fmvNodes.length; i++) {
+            if (fmvNodes[i].pfadrect) {
+                if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - fmvNodes[i].childHight)) {
+                    console.log("here");
+                    focusNode(fmvNodes[i]);
+                    focused = true;
+                }
+            }
+        }
+        if (!focused)
+            focusNode(null);
+        redrawWithoutChildren();
     }
     function onMouseUp(_event) {
-        if (hasMouseBeenMoved) {
-            return;
-        }
+        // if (hasMouseBeenMoved) {
+        //   return;
+        // }
         let focused = false;
-        if (ctx.isPointInPath(root.pfadrect, _event.clientX, _event.clientY)) {
+        if (ctx.isPointInPath(root.pfadrect, _event.clientX, _event.clientY - root.childHight)) {
             root.hiddenFoldedValue = !root.hiddenFoldedValue;
             let newFold = root.hiddenFoldedValue;
+            focusNode(root);
+            focused = true;
             for (let i = 1; i < fmvNodes.length; i++) {
                 fmvNodes[i].folded = newFold;
             }
         }
         else {
             for (let i = 0; i < fmvNodes.length; i++) {
-                //console.log(fmvNodes[i].pfadrect + " pfadrect " + _event.clientX, _event.clientY, i + " i");
                 if (fmvNodes[i].pfadrect) {
                     if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - fmvNodes[i].childHight)) {
-                        focusNode(fmvNodes[i]);
-                        focused = true;
-                        fmvNodes[i].folded = !fmvNodes[i].folded;
+                        if (focusedNode != null && focusedNode !== fmvNodes[i]) {
+                            changeParent(focusedNode, fmvNodes[i]);
+                        }
+                        else {
+                            focusNode(fmvNodes[i]);
+                            focused = true;
+                            fmvNodes[i].folded = !fmvNodes[i].folded;
+                        }
                     }
                 }
             }
@@ -255,6 +281,46 @@ var FreeMindViewer;
         root.folded = false;
         root.calculateVisibleChildren();
         redrawWithoutChildren();
+    }
+    function changeParent(_from, _to) {
+        for (let i = 0; i < _from.parent.children.length; i++) {
+            if (_from.parent.children[i] === _from)
+                _from.parent.children.splice(i, 1);
+        }
+        _from.parent = _to;
+        _to.children.push(_from);
+    }
+    function focusParent(_dir) {
+        if (!focusedNode)
+            return;
+        if (_dir < 0) {
+            if (focusedNode.parent)
+                focusNode(focusedNode.parent);
+        }
+        else {
+            if (focusedNode.children)
+                focusNode(focusedNode.children[0]);
+        }
+    }
+    function focusSibling(_dir) {
+        if (!focusedNode)
+            return;
+        for (let i = 0; i < focusedNode.parent.children.length; i++) {
+            if (focusedNode.parent.children[i] === focusedNode) {
+                if (_dir < 0) {
+                    if (i == 0)
+                        return;
+                    focusNode(focusedNode.parent.children[i - 1]);
+                    return;
+                }
+                else {
+                    if (i == focusedNode.parent.children.length - 1)
+                        return;
+                    focusNode(focusedNode.parent.children[i + 1]);
+                    return;
+                }
+            }
+        }
     }
     function focusNode(_node) {
         if (focusedNode)
@@ -266,6 +332,7 @@ var FreeMindViewer;
         }
         focusedNode = _node;
         focusedNode.strokeStile = "blue";
+        redrawWithoutChildren();
     }
     function createTextFieldOnNode() {
         if (!focusedNode)
@@ -286,7 +353,7 @@ var FreeMindViewer;
     }
     function onPointerMove(_event) {
         hasMouseBeenMoved = true;
-        if (_event.buttons == 1) {
+        if (_event.buttons == 1 && focusedNode == null) {
             FreeMindViewer.rootNodeY += _event.movementY;
             FreeMindViewer.rootNodeX += _event.movementX;
             redrawWithoutChildren();
