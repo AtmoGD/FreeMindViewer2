@@ -9,7 +9,9 @@ body {
 canvas {
   display: block;
 }
-
+#optionArea {
+  height: 100px;
+}
 #canvasContainer {
   position: relative;
 }

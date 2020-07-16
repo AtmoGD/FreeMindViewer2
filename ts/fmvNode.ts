@@ -171,6 +171,7 @@ namespace FreeMindViewer {
     drawFMVNode(): void {
       this.ctx.font = "14px sans-serif";
       this.ctx.fillStyle = "black";
+      this.ctx.strokeStyle = this.strokeStile;
       this.contentWidth = this.ctx.measureText(this.content).width;
       this.pfadrect = new Path2D();
       this.pfadrect.ellipse(this.posX, this.posY, this.contentWidth, this.contentWidth / 2, 0, 0, 2 * Math.PI);

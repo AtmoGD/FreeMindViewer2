@@ -114,10 +114,10 @@ var FreeMindViewer;
         canvas.addEventListener("mousedown", onMouseDown);
         canvas.addEventListener("mouseup", onMouseUp);
         window.addEventListener("keydown", keyboardInput);
-        canvas.addEventListener("touchstart", handleStart, false);
-        canvas.addEventListener("touchend", handleEnd, false);
-        canvas.addEventListener("touchcancel", handleCancel, false);
-        canvas.addEventListener("touchmove", handleMove, false);
+        // canvas.addEventListener("touchstart", handleStart, false);
+        // canvas.addEventListener("touchend", handleEnd, false);
+        // canvas.addEventListener("touchcancel", handleCancel, false);
+        // canvas.addEventListener("touchmove", handleMove, false);
         //  canvas.addEventListener("touchend",)
     }
     function resizecanvas() {
@@ -230,57 +230,62 @@ var FreeMindViewer;
     }
     function onMouseDown(_event) {
         hasMouseBeenMoved = false;
-        if (focusedNode)
-            return;
-        let focused = false;
-        for (let i = 0; i < fmvNodes.length; i++) {
-            if (fmvNodes[i].pfadrect) {
-                if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - fmvNodes[i].childHight)) {
-                    console.log("here");
-                    focusNode(fmvNodes[i]);
-                    focused = true;
-                }
-            }
-        }
-        if (!focused)
-            focusNode(null);
-        redrawWithoutChildren();
+        // if (focusedNode)
+        //   return;
+        // let focused: boolean = false;
+        // for (let i: number = 0; i < fmvNodes.length; i++) {
+        //   if (fmvNodes[i].pfadrect) {
+        //     if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - fmvNodes[i].childHight)) {
+        //       console.log("here");
+        //       focusNode(fmvNodes[i]);
+        //       focused = true;
+        //     }
+        //   }
+        // }
+        // if (!focused)
+        //   focusNode(null);
+        // redrawWithoutChildren();
     }
     function onMouseUp(_event) {
         // if (hasMouseBeenMoved) {
         //   return;
         // }
-        let focused = false;
-        if (ctx.isPointInPath(root.pfadrect, _event.clientX, _event.clientY - root.childHight)) {
-            root.hiddenFoldedValue = !root.hiddenFoldedValue;
-            let newFold = root.hiddenFoldedValue;
-            focusNode(root);
-            focused = true;
-            for (let i = 1; i < fmvNodes.length; i++) {
-                fmvNodes[i].folded = newFold;
-            }
-        }
-        else {
-            for (let i = 0; i < fmvNodes.length; i++) {
-                if (fmvNodes[i].pfadrect) {
-                    if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - fmvNodes[i].childHight)) {
-                        if (focusedNode != null && focusedNode !== fmvNodes[i]) {
-                            changeParent(focusedNode, fmvNodes[i]);
-                        }
-                        else {
-                            focusNode(fmvNodes[i]);
-                            focused = true;
-                            fmvNodes[i].folded = !fmvNodes[i].folded;
-                        }
-                    }
+        focusNode(null);
+        for (let i = 0; i < fmvNodes.length; i++) {
+            if (fmvNodes[i].pfadrect) {
+                if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - 100)) { // 100 weil die höhe des oberen Bereichs abgezogen werden muss
+                    focusNode(fmvNodes[i]);
+                    // fmvNodes[i].folded = !fmvNodes[i].folded;
+                    // redrawWithoutChildren();
                 }
             }
         }
-        if (!focused)
-            focusNode(null);
-        root.folded = false;
-        root.calculateVisibleChildren();
-        redrawWithoutChildren();
+        // if (!focused)
+        //   focusNode(null);
+        // if (ctx.isPointInPath(root.pfadrect, _event.clientX, _event.clientY - (root.childHight * 2))) {
+        //   // root.hiddenFoldedValue = !root.hiddenFoldedValue;
+        //   // let newFold: boolean = root.hiddenFoldedValue;
+        //   focusNode(root);
+        //   focused = true;
+        //   // for (let i: number = 1; i < fmvNodes.length; i++) {
+        //   //   fmvNodes[i].folded = newFold;
+        //   // }
+        // } else {
+        //   for (let i: number = 0; i < fmvNodes.length; i++) {
+        //     if (fmvNodes[i].pfadrect) {
+        //       if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - (fmvNodes[i].childHight * 2))) {
+        //         focusNode(fmvNodes[i]);
+        //         focused = true;
+        //         // fmvNodes[i].folded = !fmvNodes[i].folded;
+        //         redrawWithoutChildren();
+        //       }
+        //     }
+        //   }
+        // }
+        // if (!focused)
+        //   focusNode(null);
+        // root.folded = false;
+        // root.calculateVisibleChildren();
     }
     function changeParent(_from, _to) {
         for (let i = 0; i < _from.parent.children.length; i++) {
@@ -325,13 +330,9 @@ var FreeMindViewer;
     function focusNode(_node) {
         if (focusedNode)
             focusedNode.strokeStile = "black";
-        if (!_node) {
-            if (focusedNode)
-                focusedNode = null;
-            return;
-        }
         focusedNode = _node;
-        focusedNode.strokeStile = "blue";
+        if (focusedNode)
+            focusedNode.strokeStile = "blue";
         redrawWithoutChildren();
     }
     function createTextFieldOnNode() {
@@ -360,87 +361,85 @@ var FreeMindViewer;
         }
     }
     //<----------------------------------------------------------------------Variablen mitten im Code------------------------------------------------------>
-    let ongoingTouches = [];
-    let cordX;
-    let cordY;
-    //<----------------------------------------------------------------------Variablen mitten im Code------------------------------------------------------>
-    function handleStart(_event) {
-        _event.preventDefault();
-        console.log(" touchstart");
-        let theTouchlist = _event.touches;
-        for (let i = 0; i < theTouchlist.length; i++) {
-            console.log("touchstart:" + i + "...");
-            ongoingTouches.push(copyTouch(theTouchlist[i]));
-            cordX = theTouchlist[i].clientX;
-            cordY = theTouchlist[i].clientY;
-            console.log("touchstart:" + i + ".");
-        }
-    }
-    function handleMove(_event) {
-        let touches = _event.changedTouches;
-        console.log(touches.length);
-        for (let i = 0; i < touches.length; i++) {
-            let idx = ongoingTouchIndexById(touches[i].identifier);
-            console.log(idx + " idx");
-            let deltaX;
-            let deltaY;
-            let xStrich = touches[i].clientX;
-            let yStrich = touches[i].clientY;
-            deltaX = xStrich - cordX;
-            deltaY = yStrich - cordY;
-            FreeMindViewer.rootNodeX += deltaX;
-            FreeMindViewer.rootNodeY += deltaY;
-            console.log(deltaX, deltaY, cordX, cordY, xStrich, yStrich);
-            cordX = xStrich;
-            cordY = yStrich;
-            redrawWithoutChildren();
-            if (idx >= 0) {
-                ongoingTouches.splice(idx, 1, copyTouch(touches[i])); // swap in the new touch record
-            }
-            else {
-                console.log("can't figure out which touch to continue");
-            }
-        }
-    }
-    function handleEnd(_event) {
-        _event.preventDefault();
-        let theTouchlist = _event.changedTouches;
-        for (var i = 0; i < theTouchlist.length; i++) {
-            var idx = ongoingTouchIndexById(theTouchlist[i].identifier);
-            if (idx >= 0) {
-                console.log(" end of touch");
-                ongoingTouches.splice(idx, 1); // remove it; we're done
-            }
-            else {
-                console.log("can't figure out which touch to end");
-            }
-        }
-    }
-    function handleCancel(_event) {
-        _event.preventDefault();
-        console.log("touchcancel.");
-        let touches = _event.changedTouches;
-        for (var i = 0; i < touches.length; i++) {
-            var idx = ongoingTouchIndexById(touches[i].identifier);
-            ongoingTouches.splice(idx, 1); // remove it; we're done
-        }
-    }
-    function copyTouch(touch) {
-        return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY };
-    }
+    // let ongoingTouches: any[] = [];
+    // let cordX: number;
+    // let cordY: number;
+    // //<----------------------------------------------------------------------Variablen mitten im Code------------------------------------------------------>
+    // function handleStart(_event: TouchEvent): void {
+    //   _event.preventDefault();
+    //   console.log(" touchstart");
+    //   let theTouchlist: TouchList = _event.touches;
+    //   for (let i: number = 0; i < theTouchlist.length; i++) {
+    //     console.log("touchstart:" + i + "...");
+    //     ongoingTouches.push(copyTouch(theTouchlist[i]));
+    //     cordX = theTouchlist[i].clientX;
+    //     cordY = theTouchlist[i].clientY;
+    //     console.log("touchstart:" + i + ".");
+    //   }
+    // }
+    // function handleMove(_event: TouchEvent): void {
+    //   let touches: TouchList = _event.changedTouches;
+    //   console.log(touches.length);
+    //   for (let i: number = 0; i < touches.length; i++) {
+    //     let idx: number = ongoingTouchIndexById(touches[i].identifier);
+    //     console.log(idx + " idx");
+    //     let deltaX: number;
+    //     let deltaY: number;
+    //     let xStrich: number = touches[i].clientX;
+    //     let yStrich: number = touches[i].clientY;
+    //     deltaX = xStrich - cordX;
+    //     deltaY = yStrich - cordY;
+    //     rootNodeX += deltaX;
+    //     rootNodeY += deltaY;
+    //     console.log(deltaX, deltaY, cordX, cordY, xStrich, yStrich);
+    //     cordX = xStrich;
+    //     cordY = yStrich;
+    //     redrawWithoutChildren();
+    //     if (idx >= 0) {
+    //       ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
+    //     } else {
+    //       console.log("can't figure out which touch to continue");
+    //     }
+    //   }
+    // }
+    // function handleEnd(_event: TouchEvent): void {
+    //   _event.preventDefault();
+    //   let theTouchlist: TouchList = _event.changedTouches;
+    //   for (var i: number = 0; i < theTouchlist.length; i++) {
+    //     var idx: number = ongoingTouchIndexById(theTouchlist[i].identifier);
+    //     if (idx >= 0) {
+    //       console.log(" end of touch");
+    //       ongoingTouches.splice(idx, 1);  // remove it; we're done
+    //     } else {
+    //       console.log("can't figure out which touch to end");
+    //     }
+    //   }
+    // }
+    // function handleCancel(_event: TouchEvent): void {
+    //   _event.preventDefault();
+    //   console.log("touchcancel.");
+    //   let touches: TouchList = _event.changedTouches;
+    //   for (var i: number = 0; i < touches.length; i++) {
+    //     var idx: number = ongoingTouchIndexById(touches[i].identifier);
+    //     ongoingTouches.splice(idx, 1);  // remove it; we're done
+    //   }
+    // }
+    // function copyTouch(touch: Touch): {} {
+    //   return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY };
+    // }
     function clearMap() {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // clears the canvas
     }
-    function ongoingTouchIndexById(idToFind) {
-        for (let i = 0; i < ongoingTouches.length; i++) {
-            let id = ongoingTouches[i].identifier;
-            console.log(id + " id");
-            if (id == idToFind) {
-                return i;
-            }
-        }
-        return -1; // not found
-    }
+    // function ongoingTouchIndexById(idToFind: any): number {
+    //   for (let i: number = 0; i < ongoingTouches.length; i++) {
+    //     let id: any = ongoingTouches[i].identifier;
+    //     console.log(id + " id");
+    //     if (id == idToFind) {
+    //       return i;
+    //     }
+    //   }
+    //   return -1;    // not found
+    // }
     // parses URL parameters to object
     function getUrlSearchJson() {
         try {
