@@ -303,7 +303,7 @@ var FreeMindViewer;
                 focusNode(focusedNode.parent);
         }
         else {
-            if (focusedNode.children)
+            if (focusedNode.children.length > 0)
                 focusNode(focusedNode.children[0]);
         }
     }
