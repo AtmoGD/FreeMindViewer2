@@ -305,7 +305,7 @@ namespace FreeMindViewer {
 
     for (let i: number = 0; i < fmvNodes.length; i++) {
       if (fmvNodes[i].pfadrect) {
-        if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - 100)) { // 100 weil die höhe des oberen Bereichs abgezogen werden muss
+        if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) { // 100 weil die höhe des oberen Bereichs abgezogen werden muss
           focusNode(fmvNodes[i]);
           // fmvNodes[i].folded = !fmvNodes[i].folded;
           // redrawWithoutChildren();
