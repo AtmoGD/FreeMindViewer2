@@ -230,6 +230,17 @@ var FreeMindViewer;
     }
     function onMouseDown(_event) {
         hasMouseBeenMoved = false;
+        for (let i = 0; i < fmvNodes.length; i++) {
+            if (fmvNodes[i].pfadrect) {
+                if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
+                    focusNode(fmvNodes[i]);
+                    return;
+                    // fmvNodes[i].folded = !fmvNodes[i].folded;
+                    // redrawWithoutChildren();
+                }
+            }
+        }
+        focusNode(null);
         // if (focusedNode)
         //   return;
         // let focused: boolean = false;
@@ -250,11 +261,16 @@ var FreeMindViewer;
         // if (hasMouseBeenMoved) {
         //   return;
         // }
-        focusNode(null);
+        // focusNode(null);
+        if (!focusedNode)
+            return;
         for (let i = 0; i < fmvNodes.length; i++) {
             if (fmvNodes[i].pfadrect) {
-                if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) { // 100 weil die höhe des oberen Bereichs abgezogen werden muss
-                    focusNode(fmvNodes[i]);
+                if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
+                    if (fmvNodes[i] != focusedNode) {
+                        changeParent(focusedNode, fmvNodes[i]);
+                        return;
+                    }
                     // fmvNodes[i].folded = !fmvNodes[i].folded;
                     // redrawWithoutChildren();
                 }
@@ -287,6 +303,14 @@ var FreeMindViewer;
         // root.folded = false;
         // root.calculateVisibleChildren();
     }
+    function onPointerMove(_event) {
+        hasMouseBeenMoved = true;
+        if (_event.buttons == 1 && focusedNode == null) {
+            FreeMindViewer.rootNodeY += _event.movementY;
+            FreeMindViewer.rootNodeX += _event.movementX;
+            redrawWithoutChildren();
+        }
+    }
     function changeParent(_from, _to) {
         for (let i = 0; i < _from.parent.children.length; i++) {
             if (_from.parent.children[i] === _from)
@@ -294,6 +318,7 @@ var FreeMindViewer;
         }
         _from.parent = _to;
         _to.children.push(_from);
+        redrawWithoutChildren();
     }
     function focusParent(_dir) {
         if (!focusedNode)
@@ -350,14 +375,6 @@ var FreeMindViewer;
             // focusedNode.content = textField.value;
             textField.remove();
             loadData();
-        }
-    }
-    function onPointerMove(_event) {
-        hasMouseBeenMoved = true;
-        if (_event.buttons == 1 && focusedNode == null) {
-            FreeMindViewer.rootNodeY += _event.movementY;
-            FreeMindViewer.rootNodeX += _event.movementX;
-            redrawWithoutChildren();
         }
     }
     //<----------------------------------------------------------------------Variablen mitten im Code------------------------------------------------------>

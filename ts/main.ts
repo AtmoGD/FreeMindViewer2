@@ -277,6 +277,20 @@ namespace FreeMindViewer {
   function onMouseDown(_event: MouseEvent): void {
     hasMouseBeenMoved = false;
 
+    for (let i: number = 0; i < fmvNodes.length; i++) {
+      if (fmvNodes[i].pfadrect) {
+        if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
+          focusNode(fmvNodes[i]);
+          return;
+          // fmvNodes[i].folded = !fmvNodes[i].folded;
+          // redrawWithoutChildren();
+        }
+      }
+    }
+    
+    focusNode(null);
+
+
     // if (focusedNode)
     //   return;
 
@@ -297,21 +311,29 @@ namespace FreeMindViewer {
     // redrawWithoutChildren();
   }
 
+
   function onMouseUp(_event: MouseEvent): void {
     // if (hasMouseBeenMoved) {
     //   return;
     // }
-    focusNode(null);
+
+    // focusNode(null);
+
+    if (!focusedNode) return;
 
     for (let i: number = 0; i < fmvNodes.length; i++) {
       if (fmvNodes[i].pfadrect) {
-        if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) { // 100 weil die höhe des oberen Bereichs abgezogen werden muss
-          focusNode(fmvNodes[i]);
+        if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
+          if (fmvNodes[i] != focusedNode) {
+            changeParent(focusedNode, fmvNodes[i]);
+            return;
+          }
           // fmvNodes[i].folded = !fmvNodes[i].folded;
           // redrawWithoutChildren();
         }
       }
     }
+    
 
     // if (!focused)
     //   focusNode(null);
@@ -346,6 +368,16 @@ namespace FreeMindViewer {
 
   }
 
+  function onPointerMove(_event: MouseEvent): void {
+    hasMouseBeenMoved = true;
+
+    if (_event.buttons == 1 && focusedNode == null) {
+      rootNodeY += _event.movementY;
+      rootNodeX += _event.movementX;
+      redrawWithoutChildren();
+    }
+  }
+
   function changeParent(_from: FMVNode, _to: FMVNode): void {
     for (let i: number = 0; i < _from.parent.children.length; i++) {
       if (_from.parent.children[i] === _from)
@@ -354,6 +386,7 @@ namespace FreeMindViewer {
 
     _from.parent = _to;
     _to.children.push(_from);
+    redrawWithoutChildren();
   }
 
   function focusParent(_dir: number) {
@@ -424,16 +457,6 @@ namespace FreeMindViewer {
     }
   }
 
-
-  function onPointerMove(_event: MouseEvent): void {
-    hasMouseBeenMoved = true;
-
-    if (_event.buttons == 1 && focusedNode == null) {
-      rootNodeY += _event.movementY;
-      rootNodeX += _event.movementX;
-      redrawWithoutChildren();
-    }
-  }
   //<----------------------------------------------------------------------Variablen mitten im Code------------------------------------------------------>
   // let ongoingTouches: any[] = [];
 
