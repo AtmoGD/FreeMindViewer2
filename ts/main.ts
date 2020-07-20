@@ -402,14 +402,9 @@ namespace FreeMindViewer {
     if (_of.node.contains(_to.node))
       return;
 
-    for (let i: number = 0; i < _of.parent.children.length; i++) {
-      if (_of.parent.children[i] === _of)
-        _of.parent.children.splice(i, 1);
-    }
     _to.node.appendChild(_of.node);
-    _of.parent = _to;
-    _to.children.push(_of);
-    redrawWithoutChildren();
+    
+    createMindmap();
   }
 
   function focusParent(_dir: number) {
