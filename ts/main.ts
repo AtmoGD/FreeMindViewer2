@@ -233,6 +233,8 @@ namespace FreeMindViewer {
       case "Enter":
         createNewNode();
         break;
+      case "Escape":
+        break;
     }
   }
 
@@ -369,6 +371,7 @@ namespace FreeMindViewer {
     textField.style.top = focusedNode.posY - (focusedNode.childHight / 2) + "px";
     document.querySelector("#canvasContainer").appendChild(textField);
     textField.focus();
+
     let node: FMVNode = focusedNode;
     textField.onblur = () => {
       updateNode(node);
@@ -377,7 +380,7 @@ namespace FreeMindViewer {
     function updateNode(_node: FMVNode): void {
       if (textField.value != "")
         _node.node.setAttribute("TEXT", textField.value);
-        
+
       textField.remove();
       mindmapData = createXMLFile();
       createMindmap();

@@ -191,6 +191,8 @@ var FreeMindViewer;
             case "Enter":
                 createNewNode();
                 break;
+            case "Escape":
+                break;
         }
     }
     function createXMLFile() {
