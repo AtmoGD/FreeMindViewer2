@@ -16,6 +16,14 @@ var FreeMindViewer;
             this.mapPosition = side;
             this.folded = folded;
         }
+        changeSide() {
+            this.mapPosition = this.mapPosition == "left" ? "right" : "left";
+            if (this.children.length <= 0)
+                return;
+            this.children.forEach(child => {
+                child.changeSide();
+            });
+        }
         setPosition(_previousSiblingsWeight) {
             if (this.mapPosition == "right") {
                 this.posX = this.parent.posX + this.parent.content.length * 7 + 70;

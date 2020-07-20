@@ -39,7 +39,16 @@ namespace FreeMindViewer {
       this.folded = folded;
     }
 
-    setPosition(_previousSiblingsWeight: number): void {
+    public changeSide(): void {
+      this.mapPosition = this.mapPosition == "left" ? "right" : "left";
+      
+      if(this.children.length <= 0) return;
+
+      this.children.forEach(child => {
+        child.changeSide();
+      });
+    }
+    public setPosition(_previousSiblingsWeight: number): void {
       if (this.mapPosition == "right") {
         this.posX = this.parent.posX + this.parent.content.length * 7 + 70;
         this.posY = this.calculateHighestPoint(this.parent.posY, this.parent.weightVisibleChildrenRight, this.childHight, _previousSiblingsWeight, this.weightVisibleChildrenRight);

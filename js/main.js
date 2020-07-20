@@ -226,7 +226,21 @@ var FreeMindViewer;
                 if (focusedNode)
                     focusParent(1);
                 break;
+            case "Enter":
+                createNewNode();
+                break;
         }
+    }
+    function createNewNode() {
+        let parent = focusedNode ? focusedNode : root;
+        let xmlParent = mindmapData.getElementById(parent.node.getAttribute("ID"));
+        console.log(xmlParent);
+        let xmlNode = mindmapData.createElement("NODE");
+        xmlNode.setAttribute("TEXT", "New Node");
+        xmlParent.appendChild(xmlNode);
+        // let newNode: FMVNode = new FMVNode(parent, ctx, "", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
+        // parent.children.push(newNode);
+        redrawWithoutChildren();
     }
     function onMouseDown(_event) {
         hasMouseBeenMoved = false;
@@ -269,6 +283,11 @@ var FreeMindViewer;
                 if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
                     if (fmvNodes[i] != focusedNode) {
                         changeParent(focusedNode, fmvNodes[i]);
+                        if (fmvNodes[i] === root) {
+                            focusedNode.changeSide();
+                            root.setPosition(0);
+                        }
+                        redrawWithoutChildren();
                         return;
                     }
                     // fmvNodes[i].folded = !fmvNodes[i].folded;
@@ -366,15 +385,18 @@ var FreeMindViewer;
         let textField = document.createElement("input");
         textField.style.position = "fixed";
         textField.style.left = focusedNode.posX + "px";
-        textField.style.top = focusedNode.posY + 25 + "px";
+        textField.style.top = focusedNode.posY - (focusedNode.childHight / 2) + "px";
         document.querySelector("#canvasContainer").appendChild(textField);
         textField.focus();
-        textField.onblur = updateNode;
-        function updateNode() {
-            focusedNode.node.setAttribute("TEXT", textField.value);
-            // focusedNode.content = textField.value;
+        let node = focusedNode;
+        textField.onblur = () => {
+            updateNode(node);
+        };
+        function updateNode(_node) {
+            _node.node.setAttribute("TEXT", textField.value);
+            _node.content = textField.value;
             textField.remove();
-            loadData();
+            redrawWithoutChildren();
         }
     }
     //<----------------------------------------------------------------------Variablen mitten im Code------------------------------------------------------>
