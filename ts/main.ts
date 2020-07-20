@@ -243,15 +243,21 @@ namespace FreeMindViewer {
   }
 
   function createNewNode(): void {
-    // let parent: FMVNode = focusedNode ? focusedNode : root;
-    // let xmlParent: Element = mindmapData.getElementById(parent.node.getAttribute("ID"));
-    // console.log(xmlParent);
-    // let xmlNode: Element = mindmapData.createElement("NODE");
-    // xmlNode.setAttribute("TEXT", "New Node");
-    // xmlParent.appendChild(xmlNode);
-    // // let newNode: FMVNode = new FMVNode(parent, ctx, "", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
-    // // parent.children.push(newNode);
-    // redrawWithoutChildren();
+    let parent: FMVNode = focusedNode ? focusedNode : root;
+
+    let newNode: Element = document.createElement("node");
+    parent.node.appendChild(newNode);
+
+    let newFMVNode: FMVNode = new FMVNode(parent, ctx, "new Node", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
+    newFMVNode.node = newNode;
+    newFMVNode.node.setAttribute("TEXT", "");
+    parent.children.push(newFMVNode);
+
+    mindmapData = createXMLFile();
+    createMindmap();
+
+    focusNode(newFMVNode);
+    createTextFieldOnNode();
   }
 
   function onMouseDown(_event: MouseEvent): void {
@@ -275,7 +281,7 @@ namespace FreeMindViewer {
         if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
           if (fmvNodes[i] != focusedNode) {
             changeParent(focusedNode, fmvNodes[i]);
-            
+
             if (fmvNodes[i] === root) {
               focusedNode.changeSide();
               root.setPosition(0);
@@ -317,7 +323,6 @@ namespace FreeMindViewer {
       if (focusedNode.children.length > 0)
         focusNode(focusedNode.children[0]);
     }
-
   }
 
   function focusSibling(_dir: number): void {

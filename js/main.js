@@ -199,15 +199,17 @@ var FreeMindViewer;
         return doc;
     }
     function createNewNode() {
-        // let parent: FMVNode = focusedNode ? focusedNode : root;
-        // let xmlParent: Element = mindmapData.getElementById(parent.node.getAttribute("ID"));
-        // console.log(xmlParent);
-        // let xmlNode: Element = mindmapData.createElement("NODE");
-        // xmlNode.setAttribute("TEXT", "New Node");
-        // xmlParent.appendChild(xmlNode);
-        // // let newNode: FMVNode = new FMVNode(parent, ctx, "", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
-        // // parent.children.push(newNode);
-        // redrawWithoutChildren();
+        let parent = focusedNode ? focusedNode : root;
+        let newNode = document.createElement("node");
+        parent.node.appendChild(newNode);
+        let newFMVNode = new FreeMindViewer.FMVNode(parent, ctx, "new Node", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
+        newFMVNode.node = newNode;
+        newFMVNode.node.setAttribute("TEXT", "");
+        parent.children.push(newFMVNode);
+        mindmapData = createXMLFile();
+        createMindmap();
+        focusNode(newFMVNode);
+        createTextFieldOnNode();
     }
     function onMouseDown(_event) {
         for (let i = 0; i < fmvNodes.length; i++) {
