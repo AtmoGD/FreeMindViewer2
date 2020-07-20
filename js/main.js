@@ -309,7 +309,8 @@ var FreeMindViewer;
             updateNode(node);
         };
         function updateNode(_node) {
-            _node.node.setAttribute("TEXT", textField.value);
+            if (textField.value != "")
+                _node.node.setAttribute("TEXT", textField.value);
             textField.remove();
             mindmapData = createXMLFile();
             createMindmap();

@@ -375,7 +375,9 @@ namespace FreeMindViewer {
     }
 
     function updateNode(_node: FMVNode): void {
-      _node.node.setAttribute("TEXT", textField.value);
+      if (textField.value != "")
+        _node.node.setAttribute("TEXT", textField.value);
+        
       textField.remove();
       mindmapData = createXMLFile();
       createMindmap();
