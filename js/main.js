@@ -193,16 +193,21 @@ var FreeMindViewer;
                 break;
         }
     }
+    function createXMLFile() {
+        let doc = document.implementation.createDocument(null, "node", null);
+        doc.documentElement.appendChild(rootNode);
+        return doc;
+    }
     function createNewNode() {
-        let parent = focusedNode ? focusedNode : root;
-        let xmlParent = mindmapData.getElementById(parent.node.getAttribute("ID"));
-        console.log(xmlParent);
-        let xmlNode = mindmapData.createElement("NODE");
-        xmlNode.setAttribute("TEXT", "New Node");
-        xmlParent.appendChild(xmlNode);
-        // let newNode: FMVNode = new FMVNode(parent, ctx, "", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
-        // parent.children.push(newNode);
-        redrawWithoutChildren();
+        // let parent: FMVNode = focusedNode ? focusedNode : root;
+        // let xmlParent: Element = mindmapData.getElementById(parent.node.getAttribute("ID"));
+        // console.log(xmlParent);
+        // let xmlNode: Element = mindmapData.createElement("NODE");
+        // xmlNode.setAttribute("TEXT", "New Node");
+        // xmlParent.appendChild(xmlNode);
+        // // let newNode: FMVNode = new FMVNode(parent, ctx, "", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
+        // // parent.children.push(newNode);
+        // redrawWithoutChildren();
     }
     function onMouseDown(_event) {
         for (let i = 0; i < fmvNodes.length; i++) {
@@ -245,6 +250,7 @@ var FreeMindViewer;
         if (_of.node.contains(_to.node))
             return;
         _to.node.appendChild(_of.node);
+        mindmapData = createXMLFile();
         createMindmap();
     }
     function focusParent(_dir) {
@@ -303,6 +309,7 @@ var FreeMindViewer;
         function updateNode(_node) {
             _node.node.setAttribute("TEXT", textField.value);
             textField.remove();
+            mindmapData = createXMLFile();
             createMindmap();
         }
     }

@@ -236,16 +236,22 @@ namespace FreeMindViewer {
     }
   }
 
+  function createXMLFile(): XMLDocument {
+    let doc: XMLDocument = document.implementation.createDocument(null, "node", null);
+    doc.documentElement.appendChild(rootNode);
+    return doc;
+  }
+
   function createNewNode(): void {
-    let parent: FMVNode = focusedNode ? focusedNode : root;
-    let xmlParent: Element = mindmapData.getElementById(parent.node.getAttribute("ID"));
-    console.log(xmlParent);
-    let xmlNode: Element = mindmapData.createElement("NODE");
-    xmlNode.setAttribute("TEXT", "New Node");
-    xmlParent.appendChild(xmlNode);
-    // let newNode: FMVNode = new FMVNode(parent, ctx, "", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
-    // parent.children.push(newNode);
-    redrawWithoutChildren();
+    // let parent: FMVNode = focusedNode ? focusedNode : root;
+    // let xmlParent: Element = mindmapData.getElementById(parent.node.getAttribute("ID"));
+    // console.log(xmlParent);
+    // let xmlNode: Element = mindmapData.createElement("NODE");
+    // xmlNode.setAttribute("TEXT", "New Node");
+    // xmlParent.appendChild(xmlNode);
+    // // let newNode: FMVNode = new FMVNode(parent, ctx, "", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
+    // // parent.children.push(newNode);
+    // redrawWithoutChildren();
   }
 
   function onMouseDown(_event: MouseEvent): void {
@@ -269,7 +275,7 @@ namespace FreeMindViewer {
         if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
           if (fmvNodes[i] != focusedNode) {
             changeParent(focusedNode, fmvNodes[i]);
-
+            
             if (fmvNodes[i] === root) {
               focusedNode.changeSide();
               root.setPosition(0);
@@ -296,6 +302,7 @@ namespace FreeMindViewer {
 
     _to.node.appendChild(_of.node);
 
+    mindmapData = createXMLFile();
     createMindmap();
   }
 
@@ -365,6 +372,7 @@ namespace FreeMindViewer {
     function updateNode(_node: FMVNode): void {
       _node.node.setAttribute("TEXT", textField.value);
       textField.remove();
+      mindmapData = createXMLFile();
       createMindmap();
     }
   }
