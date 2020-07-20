@@ -11,8 +11,6 @@ var FreeMindViewer;
 (function (FreeMindViewer) {
     window.addEventListener("load", init);
     let params;
-    //let body: HTMLBodyElement = document.getElementsByTagName("body")[0];
-    //let list: HTMLElement;
     let canvas;
     let ctx;
     let focusedNode;
@@ -21,8 +19,6 @@ var FreeMindViewer;
     let rootNode; // first actual node of the mindmap
     let root;
     let fmvNodes;
-    let hasMouseBeenMoved = false;
-    //let url: string;
     function init() {
         fmvNodes = [];
         params = getUrlSearchJson();
@@ -30,27 +26,12 @@ var FreeMindViewer;
             FreeMindViewer.login();
         else if (params.code && params.state)
             FreeMindViewer.fetchAccesstokenAndLogin(params.code, params.state);
-        if (params.list == undefined) {
-            params.list = "false";
-        }
         if (params.path == undefined || params.path == "") {
             params.path = "./mm";
             params.map = "README.mm";
             params.list = "false";
         }
-        //url = params.path + "/" + params.map;
         fetchXML();
-        // fetchXML().then(() => {
-        //   docNode = mindmapData.documentElement;
-        //   rootNode = docNode.firstElementChild;
-        //   if (params.list == "true") {
-        //     //createList();
-        //   } else if (params.list == "false" || !params.list) {
-        //     createCanvas();
-        //     createMindmap();
-        //   }
-        // });
-        //document.getElementById('hideit').addEventListener('click', toggleHide);
         window.addEventListener("resize", resizecanvas, false);
         FreeMindViewer.loginButton = document.querySelector("#loginOutbutton");
         FreeMindViewer.loginSpan = document.querySelector("#userName");
@@ -96,11 +77,8 @@ var FreeMindViewer;
     }
     function createCanvas() {
         canvas = document.getElementsByTagName("canvas")[0];
-        /* canvas = document.createElement("canvas");
-        canvas.id = "fmcanvas"; */
         canvas.setAttribute("height", "window.innerHeight");
         canvas.setAttribute("width", "window.innerWidth");
-        //body.appendChild(canvas);
         ctx = canvas.getContext("2d");
         // match Canvas dimensions to browser window
         ctx.canvas.width = window.innerWidth;
@@ -109,16 +87,10 @@ var FreeMindViewer;
         FreeMindViewer.rootNodeX = ctx.canvas.width / 2;
         FreeMindViewer.rootNodeY = ctx.canvas.height / 2;
         // Eventlistener for draggable canvas
-        //canvas.addEventListener("mousedown", handleMouseDown);
         canvas.addEventListener("mousemove", onPointerMove);
         canvas.addEventListener("mousedown", onMouseDown);
         canvas.addEventListener("mouseup", onMouseUp);
         window.addEventListener("keydown", keyboardInput);
-        // canvas.addEventListener("touchstart", handleStart, false);
-        // canvas.addEventListener("touchend", handleEnd, false);
-        // canvas.addEventListener("touchcancel", handleCancel, false);
-        // canvas.addEventListener("touchmove", handleMove, false);
-        //  canvas.addEventListener("touchend",)
     }
     function resizecanvas() {
         createCanvas();
@@ -184,17 +156,7 @@ var FreeMindViewer;
         root.setPosition(0);
         root.drawFMVNode();
     }
-    /*  function createNewEntry(_x: number, _y: number) {
-   
-       for (let i: number; i < fmvNodes.length; i++) {
-         console.log(fmvNodes[i].pfadrect);
-         if (ctx.isPointInPath(fmvNodes[i].pfadrect, _x, _y)) {
-           console.log("new entry possible");
-         }
-       }
-     } */
     function keyboardInput(_event) {
-        //console.log(_event.keyCode);
         console.log(_event);
         switch (_event.code) {
             case "Space":
@@ -243,39 +205,17 @@ var FreeMindViewer;
         redrawWithoutChildren();
     }
     function onMouseDown(_event) {
-        hasMouseBeenMoved = false;
         for (let i = 0; i < fmvNodes.length; i++) {
             if (fmvNodes[i].pfadrect) {
                 if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
                     focusNode(fmvNodes[i]);
                     return;
-                    // fmvNodes[i].folded = !fmvNodes[i].folded;
-                    // redrawWithoutChildren();
                 }
             }
         }
         focusNode(null);
-        // if (focusedNode)
-        //   return;
-        // let focused: boolean = false;
-        // for (let i: number = 0; i < fmvNodes.length; i++) {
-        //   if (fmvNodes[i].pfadrect) {
-        //     if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - fmvNodes[i].childHight)) {
-        //       console.log("here");
-        //       focusNode(fmvNodes[i]);
-        //       focused = true;
-        //     }
-        //   }
-        // }
-        // if (!focused)
-        //   focusNode(null);
-        // redrawWithoutChildren();
     }
     function onMouseUp(_event) {
-        // if (hasMouseBeenMoved) {
-        //   return;
-        // }
-        // focusNode(null);
         if (!focusedNode)
             return;
         for (let i = 0; i < fmvNodes.length; i++) {
@@ -290,40 +230,11 @@ var FreeMindViewer;
                         redrawWithoutChildren();
                         return;
                     }
-                    // fmvNodes[i].folded = !fmvNodes[i].folded;
-                    // redrawWithoutChildren();
                 }
             }
         }
-        // if (!focused)
-        //   focusNode(null);
-        // if (ctx.isPointInPath(root.pfadrect, _event.clientX, _event.clientY - (root.childHight * 2))) {
-        //   // root.hiddenFoldedValue = !root.hiddenFoldedValue;
-        //   // let newFold: boolean = root.hiddenFoldedValue;
-        //   focusNode(root);
-        //   focused = true;
-        //   // for (let i: number = 1; i < fmvNodes.length; i++) {
-        //   //   fmvNodes[i].folded = newFold;
-        //   // }
-        // } else {
-        //   for (let i: number = 0; i < fmvNodes.length; i++) {
-        //     if (fmvNodes[i].pfadrect) {
-        //       if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY - (fmvNodes[i].childHight * 2))) {
-        //         focusNode(fmvNodes[i]);
-        //         focused = true;
-        //         // fmvNodes[i].folded = !fmvNodes[i].folded;
-        //         redrawWithoutChildren();
-        //       }
-        //     }
-        //   }
-        // }
-        // if (!focused)
-        //   focusNode(null);
-        // root.folded = false;
-        // root.calculateVisibleChildren();
     }
     function onPointerMove(_event) {
-        hasMouseBeenMoved = true;
         if (_event.buttons == 1 && focusedNode == null) {
             FreeMindViewer.rootNodeY += _event.movementY;
             FreeMindViewer.rootNodeX += _event.movementX;
@@ -391,92 +302,13 @@ var FreeMindViewer;
         };
         function updateNode(_node) {
             _node.node.setAttribute("TEXT", textField.value);
-            _node.content = textField.value;
             textField.remove();
-            redrawWithoutChildren();
+            createMindmap();
         }
     }
-    //<----------------------------------------------------------------------Variablen mitten im Code------------------------------------------------------>
-    // let ongoingTouches: any[] = [];
-    // let cordX: number;
-    // let cordY: number;
-    // //<----------------------------------------------------------------------Variablen mitten im Code------------------------------------------------------>
-    // function handleStart(_event: TouchEvent): void {
-    //   _event.preventDefault();
-    //   console.log(" touchstart");
-    //   let theTouchlist: TouchList = _event.touches;
-    //   for (let i: number = 0; i < theTouchlist.length; i++) {
-    //     console.log("touchstart:" + i + "...");
-    //     ongoingTouches.push(copyTouch(theTouchlist[i]));
-    //     cordX = theTouchlist[i].clientX;
-    //     cordY = theTouchlist[i].clientY;
-    //     console.log("touchstart:" + i + ".");
-    //   }
-    // }
-    // function handleMove(_event: TouchEvent): void {
-    //   let touches: TouchList = _event.changedTouches;
-    //   console.log(touches.length);
-    //   for (let i: number = 0; i < touches.length; i++) {
-    //     let idx: number = ongoingTouchIndexById(touches[i].identifier);
-    //     console.log(idx + " idx");
-    //     let deltaX: number;
-    //     let deltaY: number;
-    //     let xStrich: number = touches[i].clientX;
-    //     let yStrich: number = touches[i].clientY;
-    //     deltaX = xStrich - cordX;
-    //     deltaY = yStrich - cordY;
-    //     rootNodeX += deltaX;
-    //     rootNodeY += deltaY;
-    //     console.log(deltaX, deltaY, cordX, cordY, xStrich, yStrich);
-    //     cordX = xStrich;
-    //     cordY = yStrich;
-    //     redrawWithoutChildren();
-    //     if (idx >= 0) {
-    //       ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
-    //     } else {
-    //       console.log("can't figure out which touch to continue");
-    //     }
-    //   }
-    // }
-    // function handleEnd(_event: TouchEvent): void {
-    //   _event.preventDefault();
-    //   let theTouchlist: TouchList = _event.changedTouches;
-    //   for (var i: number = 0; i < theTouchlist.length; i++) {
-    //     var idx: number = ongoingTouchIndexById(theTouchlist[i].identifier);
-    //     if (idx >= 0) {
-    //       console.log(" end of touch");
-    //       ongoingTouches.splice(idx, 1);  // remove it; we're done
-    //     } else {
-    //       console.log("can't figure out which touch to end");
-    //     }
-    //   }
-    // }
-    // function handleCancel(_event: TouchEvent): void {
-    //   _event.preventDefault();
-    //   console.log("touchcancel.");
-    //   let touches: TouchList = _event.changedTouches;
-    //   for (var i: number = 0; i < touches.length; i++) {
-    //     var idx: number = ongoingTouchIndexById(touches[i].identifier);
-    //     ongoingTouches.splice(idx, 1);  // remove it; we're done
-    //   }
-    // }
-    // function copyTouch(touch: Touch): {} {
-    //   return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY };
-    // }
     function clearMap() {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // clears the canvas
     }
-    // function ongoingTouchIndexById(idToFind: any): number {
-    //   for (let i: number = 0; i < ongoingTouches.length; i++) {
-    //     let id: any = ongoingTouches[i].identifier;
-    //     console.log(id + " id");
-    //     if (id == idToFind) {
-    //       return i;
-    //     }
-    //   }
-    //   return -1;    // not found
-    // }
-    // parses URL parameters to object
     function getUrlSearchJson() {
         try {
             let j = decodeURI(location.search);
