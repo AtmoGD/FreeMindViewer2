@@ -68,12 +68,12 @@ namespace FreeMindViewer {
     } else if (params.list == "false" || !params.list) {
       createCanvas();
       createMindmap();
-      console.log(rootNode);
+
+      // Little hack -> change side 2 times so every node has a POSITION attribute
       root.children.forEach(child => {
         child.changeSide();
         child.changeSide();
       })
-      console.log(rootNode);
     }
   }
 
@@ -125,6 +125,7 @@ namespace FreeMindViewer {
   }
 
   function createMindmap(): void {
+
     clearMap();
     mindmapData = createXMLFile();
     fmvNodes.length = 0;
@@ -270,12 +271,17 @@ namespace FreeMindViewer {
 
     let newFMVNode: FMVNode = new FMVNode(parent, ctx, "new Node", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
     newFMVNode.node = newNode;
-    newFMVNode.node.setAttribute("TEXT", "");
+    newFMVNode.node.setAttribute("TEXT", "new Node");
     newFMVNode.node.setAttribute("POSITION", parent.mapPosition == "root" ? "left" : parent.mapPosition);
 
+    newFMVNode.parent = parent;
     parent.children.push(newFMVNode);
 
+    root.calculateVisibleChildren();
+    root.setPosition(0);
+
     createMindmap();
+    redrawWithoutChildren();
 
     focusNode(newFMVNode);
     createTextFieldOnNode();
@@ -395,7 +401,12 @@ namespace FreeMindViewer {
 
     let textField: HTMLInputElement = document.createElement("input");
     textField.style.position = "fixed";
-    textField.style.left = focusedNode.posX + "px";
+
+    if (focusedNode.mapPosition == "left")
+      textField.style.left = (focusedNode.posX - ctx.measureText(focusedNode.content).width) + "px";
+    else
+      textField.style.left = focusedNode.posX + "px";
+      
     textField.style.top = focusedNode.posY - (focusedNode.childHight / 2) + "px";
     textField.style.zIndex = "5";
     document.querySelector("#canvasContainer").appendChild(textField);
