@@ -284,7 +284,6 @@ namespace FreeMindViewer {
         }
       }
     }
-
     focusNode(null);
   }
 
@@ -322,7 +321,7 @@ namespace FreeMindViewer {
       return;
 
     if (_to === root) {
-      _of.node.setAttribute("POSITION", "left"); 
+      _of.node.setAttribute("POSITION", _of.mapPosition == "left" ? "right" : "left"); 
       rootNode.appendChild(_of.node);
     }
     else

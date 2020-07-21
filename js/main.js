@@ -263,7 +263,7 @@ var FreeMindViewer;
         if (_of.node.contains(_to.node))
             return;
         if (_to === root) {
-            _of.node.setAttribute("POSITION", "left");
+            _of.node.setAttribute("POSITION", _of.mapPosition == "left" ? "right" : "left");
             rootNode.appendChild(_of.node);
         }
         else
