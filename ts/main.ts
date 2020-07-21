@@ -343,6 +343,14 @@ namespace FreeMindViewer {
 
     _dir = focusedNode.mapPosition == "right" ? _dir : -_dir;
 
+    if (focusedNode === root) {
+      root.children.forEach(el => {
+        if (el.mapPosition == (_dir < 0 ? "right" : "left"))
+          focusNode(el);
+      })
+      return;
+    }
+
     if (_dir < 0) {
       if (focusedNode.parent)
         focusNode(focusedNode.parent);
