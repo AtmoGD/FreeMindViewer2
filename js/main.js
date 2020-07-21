@@ -204,6 +204,9 @@ var FreeMindViewer;
                     activeTextField.value = focusedNode.content;
                     activeTextField.blur();
                 }
+                else {
+                    focusNode(null);
+                }
                 break;
         }
     }
