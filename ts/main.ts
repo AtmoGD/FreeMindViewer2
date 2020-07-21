@@ -368,21 +368,11 @@ namespace FreeMindViewer {
     for (let i: number = 0; i < focusedNode.parent.children.length; i++) {
       if (focusedNode.parent.children[i] === focusedNode) {
         if (_dir < 0) {
-          if (i == 0) {
-            focusNode(focusedNode.parent.children[focusedNode.parent.children.length - 1]);
-            return;
-          }else {
-            focusNode(focusedNode.parent.children[i - 1]);
-            return;
-          }
+          focusNode(focusedNode.parent.children[(i == 0 ? focusedNode.parent.children.length - 1 : i - 1)]);
+          return;
         } else {
-          if (i == focusedNode.parent.children.length - 1) {
-            focusNode(focusedNode.parent.children[0]);
-            return;
-          }else {
-            focusNode(focusedNode.parent.children[i + 1]);
-            return;
-          }
+          focusNode(focusedNode.parent.children[(i == focusedNode.parent.children.length - 1 ? 0 : i + 1)]);
+          return;
         }
       }
     }
