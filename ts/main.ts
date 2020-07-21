@@ -351,7 +351,7 @@ namespace FreeMindViewer {
   }
 
   function focusNode(_node: FMVNode): void {
-    if (focusedNode)
+    if (focusedNode) 
       focusedNode.strokeStile = "black";
 
     focusedNode = _node;

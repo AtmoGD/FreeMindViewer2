@@ -101,7 +101,7 @@ namespace FreeMindViewer {
 
     drawFMVNode(): void {
       this.ctx.font = "14px sans-serif";
-      this.ctx.fillStyle = "black";
+      this.ctx.fillStyle = this.strokeStile;
       this.ctx.strokeStyle = "transparent";
       let startX: number;
       this.contentWidth = this.ctx.measureText(this.content).width;

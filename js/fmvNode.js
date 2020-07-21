@@ -74,7 +74,7 @@ var FreeMindViewer;
         }
         drawFMVNode() {
             this.ctx.font = "14px sans-serif";
-            this.ctx.fillStyle = "black";
+            this.ctx.fillStyle = this.strokeStile;
             this.ctx.strokeStyle = "transparent";
             let startX;
             this.contentWidth = this.ctx.measureText(this.content).width;
