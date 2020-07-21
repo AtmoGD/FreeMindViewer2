@@ -55,6 +55,12 @@ var FreeMindViewer;
             else if (params.list == "false" || !params.list) {
                 createCanvas();
                 createMindmap();
+                console.log(rootNode);
+                root.children.forEach(child => {
+                    child.changeSide();
+                    child.changeSide();
+                });
+                console.log(rootNode);
             }
         });
     }
@@ -263,7 +269,7 @@ var FreeMindViewer;
         if (_of.node.contains(_to.node))
             return;
         if (_to === root) {
-            _of.node.setAttribute("POSITION", _of.mapPosition == "left" ? "right" : "left");
+            _of.changeSide();
             rootNode.appendChild(_of.node);
         }
         else
@@ -274,6 +280,7 @@ var FreeMindViewer;
     function focusParent(_dir) {
         if (!focusedNode)
             return;
+        _dir = focusedNode.mapPosition == "right" ? _dir : -_dir;
         if (_dir < 0) {
             if (focusedNode.parent)
                 focusNode(focusedNode.parent);
