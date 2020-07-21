@@ -244,6 +244,12 @@ namespace FreeMindViewer {
       case "Delete":
         deleteNode();
         break;
+      case "Escape":
+        if (activeTextField) {
+          activeTextField.value = focusedNode.content;
+          activeTextField.blur();
+        }
+        break;
     }
   }
 
@@ -434,7 +440,7 @@ namespace FreeMindViewer {
       mindmapData = createXMLFile();
       createMindmap();
 
-      focusNode(_node); 
+      focusNode(_node);
     }
   }
 

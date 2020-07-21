@@ -199,6 +199,12 @@ var FreeMindViewer;
             case "Delete":
                 deleteNode();
                 break;
+            case "Escape":
+                if (activeTextField) {
+                    activeTextField.value = focusedNode.content;
+                    activeTextField.blur();
+                }
+                break;
         }
     }
     function createXMLFile() {
