@@ -98,6 +98,7 @@ var FreeMindViewer;
     }
     function createMindmap() {
         clearMap();
+        mindmapData = createXMLFile();
         fmvNodes.length = 0;
         // create root FMVNode
         root = new FreeMindViewer.FMVRootNode(ctx, rootNode.getAttribute("TEXT"));
@@ -169,29 +170,25 @@ var FreeMindViewer;
                 }
                 break;
             case "F2":
-                if (focusedNode)
-                    createTextFieldOnNode();
+                createTextFieldOnNode();
                 break;
             case "ArrowUp":
-                if (focusedNode)
-                    focusSibling(-1);
+                focusSibling(-1);
                 break;
             case "ArrowDown":
-                if (focusedNode)
-                    focusSibling(1);
+                focusSibling(1);
                 break;
             case "ArrowLeft":
-                if (focusedNode)
-                    focusParent(-1);
+                focusParent(-1);
                 break;
             case "ArrowRight":
-                if (focusedNode)
-                    focusParent(1);
+                focusParent(1);
                 break;
             case "Enter":
                 createNewNode();
                 break;
-            case "Escape":
+            case "Delete":
+                deleteNode();
                 break;
         }
     }
@@ -200,15 +197,27 @@ var FreeMindViewer;
         doc.documentElement.appendChild(rootNode);
         return doc;
     }
+    function deleteNode() {
+        if (!focusedNode)
+            return;
+        if (focusedNode.parent === root)
+            rootNode.removeChild(focusedNode.node);
+        else
+            focusedNode.parent.node.removeChild(focusedNode.node);
+        createMindmap();
+    }
     function createNewNode() {
         let parent = focusedNode ? focusedNode : root;
         let newNode = document.createElement("node");
-        parent.node.appendChild(newNode);
+        if (parent === root)
+            rootNode.appendChild(newNode);
+        else
+            parent.node.appendChild(newNode);
         let newFMVNode = new FreeMindViewer.FMVNode(parent, ctx, "new Node", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
         newFMVNode.node = newNode;
         newFMVNode.node.setAttribute("TEXT", "");
         parent.children.push(newFMVNode);
-        mindmapData = createXMLFile();
+        fmvNodes.push(newFMVNode);
         createMindmap();
         focusNode(newFMVNode);
         createTextFieldOnNode();

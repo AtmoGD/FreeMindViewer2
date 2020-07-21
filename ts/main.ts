@@ -120,6 +120,7 @@ namespace FreeMindViewer {
 
   function createMindmap(): void {
     clearMap();
+    mindmapData = createXMLFile();
     fmvNodes.length = 0;
 
     // create root FMVNode
@@ -211,29 +212,25 @@ namespace FreeMindViewer {
         }
         break;
       case "F2":
-        if (focusedNode)
-          createTextFieldOnNode();
+        createTextFieldOnNode();
         break;
       case "ArrowUp":
-        if (focusedNode)
-          focusSibling(-1);
+        focusSibling(-1);
         break;
       case "ArrowDown":
-        if (focusedNode)
-          focusSibling(1);
+        focusSibling(1);
         break;
       case "ArrowLeft":
-        if (focusedNode)
-          focusParent(-1);
+        focusParent(-1);
         break;
       case "ArrowRight":
-        if (focusedNode)
-          focusParent(1);
+        focusParent(1);
         break;
       case "Enter":
         createNewNode();
         break;
-      case "Escape":
+      case "Delete":
+        deleteNode();
         break;
     }
   }
@@ -244,18 +241,34 @@ namespace FreeMindViewer {
     return doc;
   }
 
+  function deleteNode(): void {
+    if (!focusedNode)
+      return;
+
+    if (focusedNode.parent === root)
+      rootNode.removeChild(focusedNode.node);
+    else
+      focusedNode.parent.node.removeChild(focusedNode.node);
+
+    createMindmap();
+  }
+
   function createNewNode(): void {
     let parent: FMVNode = focusedNode ? focusedNode : root;
 
     let newNode: Element = document.createElement("node");
-    parent.node.appendChild(newNode);
+    if (parent === root)
+      rootNode.appendChild(newNode);
+    else
+      parent.node.appendChild(newNode);
 
     let newFMVNode: FMVNode = new FMVNode(parent, ctx, "new Node", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
     newFMVNode.node = newNode;
     newFMVNode.node.setAttribute("TEXT", "");
-    parent.children.push(newFMVNode);
 
-    mindmapData = createXMLFile();
+    parent.children.push(newFMVNode);
+    fmvNodes.push(newFMVNode);
+
     createMindmap();
 
     focusNode(newFMVNode);
@@ -351,7 +364,7 @@ namespace FreeMindViewer {
   }
 
   function focusNode(_node: FMVNode): void {
-    if (focusedNode) 
+    if (focusedNode)
       focusedNode.strokeStile = "black";
 
     focusedNode = _node;
