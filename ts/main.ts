@@ -26,6 +26,8 @@ namespace FreeMindViewer {
   let root: FMVRootNode;
   let fmvNodes: FMVNode[];
 
+  let activeTextField: HTMLInputElement = null;
+
   function init(): void {
     fmvNodes = [];
 
@@ -234,7 +236,10 @@ namespace FreeMindViewer {
         focusParent(1);
         break;
       case "Enter":
-        createNewNode();
+        if (activeTextField)
+          activeTextField.blur();
+        else
+          createNewNode();
         break;
       case "Delete":
         deleteNode();
@@ -305,7 +310,7 @@ namespace FreeMindViewer {
     for (let i: number = 0; i < fmvNodes.length; i++) {
       if (fmvNodes[i].pfadrect) {
         if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
-          if (fmvNodes[i] != focusedNode) {
+          if (fmvNodes[i] != focusedNode && activeTextField == null) {
             changeParent(focusedNode, fmvNodes[i]);
 
             if (fmvNodes[i] === root) {
@@ -406,11 +411,13 @@ namespace FreeMindViewer {
       textField.style.left = (focusedNode.posX - ctx.measureText(focusedNode.content).width) + "px";
     else
       textField.style.left = focusedNode.posX + "px";
-      
+
     textField.style.top = focusedNode.posY - (focusedNode.childHight / 2) + "px";
     textField.style.zIndex = "5";
     document.querySelector("#canvasContainer").appendChild(textField);
     textField.focus();
+
+    activeTextField = textField;
 
     let node: FMVNode = focusedNode;
     textField.onblur = () => {
@@ -421,9 +428,13 @@ namespace FreeMindViewer {
       if (textField.value != "")
         _node.node.setAttribute("TEXT", textField.value);
 
+      activeTextField = null;
       textField.remove();
+
       mindmapData = createXMLFile();
       createMindmap();
+
+      focusNode(_node); 
     }
   }
 

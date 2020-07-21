@@ -19,6 +19,7 @@ var FreeMindViewer;
     let rootNode; // first actual node of the mindmap
     let root;
     let fmvNodes;
+    let activeTextField = null;
     function init() {
         fmvNodes = [];
         params = getUrlSearchJson();
@@ -190,7 +191,10 @@ var FreeMindViewer;
                 focusParent(1);
                 break;
             case "Enter":
-                createNewNode();
+                if (activeTextField)
+                    activeTextField.blur();
+                else
+                    createNewNode();
                 break;
             case "Delete":
                 deleteNode();
@@ -248,7 +252,7 @@ var FreeMindViewer;
         for (let i = 0; i < fmvNodes.length; i++) {
             if (fmvNodes[i].pfadrect) {
                 if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
-                    if (fmvNodes[i] != focusedNode) {
+                    if (fmvNodes[i] != focusedNode && activeTextField == null) {
                         changeParent(focusedNode, fmvNodes[i]);
                         if (fmvNodes[i] === root) {
                             focusedNode.changeSide();
@@ -337,6 +341,7 @@ var FreeMindViewer;
         textField.style.zIndex = "5";
         document.querySelector("#canvasContainer").appendChild(textField);
         textField.focus();
+        activeTextField = textField;
         let node = focusedNode;
         textField.onblur = () => {
             updateNode(node);
@@ -344,9 +349,11 @@ var FreeMindViewer;
         function updateNode(_node) {
             if (textField.value != "")
                 _node.node.setAttribute("TEXT", textField.value);
+            activeTextField = null;
             textField.remove();
             mindmapData = createXMLFile();
             createMindmap();
+            focusNode(_node);
         }
     }
     function clearMap() {
