@@ -341,15 +341,16 @@ namespace FreeMindViewer {
     if (!focusedNode)
       return;
 
-    _dir = focusedNode.mapPosition == "right" ? _dir : -_dir;
 
     if (focusedNode === root) {
       root.children.forEach(el => {
-        if (el.mapPosition == (_dir < 0 ? "right" : "left"))
+        if (el.mapPosition == (_dir > 0 ? "right" : "left"))
           focusNode(el);
       })
       return;
     }
+
+    _dir = focusedNode.mapPosition == "right" ? _dir : -_dir;
 
     if (_dir < 0) {
       if (focusedNode.parent)
@@ -367,17 +368,21 @@ namespace FreeMindViewer {
     for (let i: number = 0; i < focusedNode.parent.children.length; i++) {
       if (focusedNode.parent.children[i] === focusedNode) {
         if (_dir < 0) {
-          if (i == 0)
+          if (i == 0) {
+            focusNode(focusedNode.parent.children[focusedNode.parent.children.length - 1]);
             return;
-
-          focusNode(focusedNode.parent.children[i - 1]);
-          return;
+          }else {
+            focusNode(focusedNode.parent.children[i - 1]);
+            return;
+          }
         } else {
-          if (i == focusedNode.parent.children.length - 1)
+          if (i == focusedNode.parent.children.length - 1) {
+            focusNode(focusedNode.parent.children[0]);
             return;
-
-          focusNode(focusedNode.parent.children[i + 1]);
-          return;
+          }else {
+            focusNode(focusedNode.parent.children[i + 1]);
+            return;
+          }
         }
       }
     }
