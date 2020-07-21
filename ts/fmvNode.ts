@@ -102,7 +102,7 @@ namespace FreeMindViewer {
     drawFMVNode(): void {
       this.ctx.font = "14px sans-serif";
       this.ctx.fillStyle = "black";
-      this.ctx.strokeStyle = this.strokeStile;
+      this.ctx.strokeStyle = "transparent";
       let startX: number;
       this.contentWidth = this.ctx.measureText(this.content).width;
       //rectangles um den text
@@ -142,6 +142,7 @@ namespace FreeMindViewer {
           this.ctx.bezierCurveTo(this.posX + this.bezPtX1, this.posY, this.parent.posX - this.parent.contentWidth - this.bezPtX2, this.parent.posY, this.parent.posX - this.parent.contentWidth, this.parent.posY);
         }
       }
+      this.ctx.strokeStyle = this.strokeStile;
       this.ctx.stroke();
       /* this.ctx.closePath(); */
 
@@ -154,7 +155,7 @@ namespace FreeMindViewer {
       } else {
         this.ctx.textAlign = "right";
       }
-      this.ctx.fillText(this.content, this.posX, this.posY);
+      this.ctx.fillText(this.content, this.posX, this.posY + 3);
       this.ctx.closePath();
 
       for (let i: number = 0; this.children.length > i && !this.folded; i++) {

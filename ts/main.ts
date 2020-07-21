@@ -369,6 +369,7 @@ namespace FreeMindViewer {
     textField.style.position = "fixed";
     textField.style.left = focusedNode.posX + "px";
     textField.style.top = focusedNode.posY - (focusedNode.childHight / 2) + "px";
+    textField.style.zIndex = "5";
     document.querySelector("#canvasContainer").appendChild(textField);
     textField.focus();
 

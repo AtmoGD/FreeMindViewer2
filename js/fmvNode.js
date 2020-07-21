@@ -75,7 +75,7 @@ var FreeMindViewer;
         drawFMVNode() {
             this.ctx.font = "14px sans-serif";
             this.ctx.fillStyle = "black";
-            this.ctx.strokeStyle = this.strokeStile;
+            this.ctx.strokeStyle = "transparent";
             let startX;
             this.contentWidth = this.ctx.measureText(this.content).width;
             //rectangles um den text
@@ -117,6 +117,7 @@ var FreeMindViewer;
                     this.ctx.bezierCurveTo(this.posX + this.bezPtX1, this.posY, this.parent.posX - this.parent.contentWidth - this.bezPtX2, this.parent.posY, this.parent.posX - this.parent.contentWidth, this.parent.posY);
                 }
             }
+            this.ctx.strokeStyle = this.strokeStile;
             this.ctx.stroke();
             /* this.ctx.closePath(); */
             this.ctx.beginPath();
@@ -129,7 +130,7 @@ var FreeMindViewer;
             else {
                 this.ctx.textAlign = "right";
             }
-            this.ctx.fillText(this.content, this.posX, this.posY);
+            this.ctx.fillText(this.content, this.posX, this.posY + 3);
             this.ctx.closePath();
             for (let i = 0; this.children.length > i && !this.folded; i++) {
                 this.children[i].drawFMVNode();
