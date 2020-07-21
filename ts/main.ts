@@ -265,9 +265,9 @@ namespace FreeMindViewer {
     let newFMVNode: FMVNode = new FMVNode(parent, ctx, "new Node", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
     newFMVNode.node = newNode;
     newFMVNode.node.setAttribute("TEXT", "");
+    newFMVNode.node.setAttribute("POSITION", parent.mapPosition == "root" ? "left" : parent.mapPosition);
 
     parent.children.push(newFMVNode);
-    fmvNodes.push(newFMVNode);
 
     createMindmap();
 
@@ -321,7 +321,12 @@ namespace FreeMindViewer {
     if (_of.node.contains(_to.node))
       return;
 
-    _to.node.appendChild(_of.node);
+    if (_to === root) {
+      _of.node.setAttribute("POSITION", "left"); 
+      rootNode.appendChild(_of.node);
+    }
+    else
+      _to.node.appendChild(_of.node);
 
     mindmapData = createXMLFile();
     createMindmap();
