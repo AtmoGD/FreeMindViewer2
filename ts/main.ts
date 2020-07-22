@@ -20,6 +20,7 @@ namespace FreeMindViewer {
 
   export let rootNodeX: number;
   export let rootNodeY: number;
+  let states: Element[] = [];
   let mindmapData: XMLDocument;
   let docNode: Element; // document node is the first node in a xml file
   let rootNode: Element; // first actual node of the mindmap
@@ -90,6 +91,8 @@ namespace FreeMindViewer {
     mindmapData = StringToXML(xmlText); // Save xml in letiable
 
     loadData();
+
+    saveState();
   }
 
   // parses a string to XML
@@ -208,7 +211,7 @@ namespace FreeMindViewer {
   }
 
   function keyboardInput(_event: KeyboardEvent): void {
-    console.log(_event);
+    // console.log(_event);
 
     switch (_event.code) {
       case "Space":
@@ -224,16 +227,28 @@ namespace FreeMindViewer {
         createTextFieldOnNode();
         break;
       case "ArrowUp":
-        focusSibling(-1);
+        if (_event.ctrlKey)
+          changeOrder(1);
+        else
+          focusSibling(-1);
         break;
       case "ArrowDown":
-        focusSibling(1);
+        if (_event.ctrlKey)
+          changeOrder(-1);
+        else
+          focusSibling(1);
         break;
       case "ArrowLeft":
-        focusParent(-1);
+        if (_event.ctrlKey)
+          setParent(-1);
+        else
+          focusParent(-1);
         break;
       case "ArrowRight":
-        focusParent(1);
+        if (_event.ctrlKey)
+          setParent(1);
+        else
+          focusParent(1);
         break;
       case "Enter":
         if (activeTextField)
@@ -252,13 +267,76 @@ namespace FreeMindViewer {
           focusNode(null);
         }
         break;
+      case "KeyY":
+        if (_event.ctrlKey)
+          loadState();
+        break;
     }
+  }
+
+  function saveState(): void {
+    states.push(<Element>rootNode.cloneNode(true));
+
+    if (states.length >= 10)
+      states.shift();
+  }
+
+  function loadState(): void {
+    if (states.length <= 0)
+      return;
+
+    rootNode = states.pop();
+    mindmapData = createXMLFile();
+    createMindmap();
+    redrawWithoutChildren();
   }
 
   function createXMLFile(): XMLDocument {
     let doc: XMLDocument = document.implementation.createDocument(null, "node", null);
     doc.documentElement.appendChild(rootNode);
     return doc;
+  }
+
+  function changeOrder(_dir: number): void {
+    // if (!focusedNode)
+    //   return;
+
+    // console.log("Here");
+  }
+
+  function setParent(_dir: number): void {
+    // if (!focusedNode || focusedNode.mapPosition == "root")
+    //   return;
+
+    // let node: FMVNode = focusedNode;
+
+    // if (node.mapPosition == "left") {
+    //   if (_dir < 0) {
+    //     if (node.children.length > 0) {
+    //       node.children.forEach(child => {
+    //         changeParent(child, node.parent);
+    //       })
+    //     }
+    //   } else {
+    //     if (node.parent === root)
+    //       node.changeSide();
+    //     else
+    //       changeParent(node, node.parent.parent);
+    //   }
+    // } else {
+    //   if (_dir > 0) {
+    //     if (node.children.length > 0) {
+    //       node.children.forEach(child => {
+    //         changeParent(child, node.parent);
+    //       })
+    //     }
+    //   } else {
+    //     if (node.parent === root)
+    //       node.changeSide();
+    //     else
+    //       changeParent(node, node.parent.parent);
+    //   }
+    // }
   }
 
   function deleteNode(): void {
@@ -354,6 +432,11 @@ namespace FreeMindViewer {
 
     mindmapData = createXMLFile();
     createMindmap();
+
+    focusNode(_of);
+    redrawWithoutChildren();
+
+    saveState();
   }
 
   function focusParent(_dir: number) {
@@ -443,6 +526,8 @@ namespace FreeMindViewer {
       createMindmap();
 
       focusNode(_node);
+
+      saveState();
     }
   }
 

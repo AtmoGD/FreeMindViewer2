@@ -14,6 +14,7 @@ var FreeMindViewer;
     let canvas;
     let ctx;
     let focusedNode;
+    let states = [];
     let mindmapData;
     let docNode; // document node is the first node in a xml file
     let rootNode; // first actual node of the mindmap
@@ -74,6 +75,7 @@ var FreeMindViewer;
             const xmlText = yield response.text();
             mindmapData = StringToXML(xmlText); // Save xml in letiable
             loadData();
+            saveState();
         });
     }
     FreeMindViewer.fetchXML = fetchXML;
@@ -164,7 +166,7 @@ var FreeMindViewer;
         root.drawFMVNode();
     }
     function keyboardInput(_event) {
-        console.log(_event);
+        // console.log(_event);
         switch (_event.code) {
             case "Space":
                 if (document.activeElement.nodeName.toLowerCase() != "input") {
@@ -179,16 +181,28 @@ var FreeMindViewer;
                 createTextFieldOnNode();
                 break;
             case "ArrowUp":
-                focusSibling(-1);
+                if (_event.ctrlKey)
+                    changeOrder(1);
+                else
+                    focusSibling(-1);
                 break;
             case "ArrowDown":
-                focusSibling(1);
+                if (_event.ctrlKey)
+                    changeOrder(-1);
+                else
+                    focusSibling(1);
                 break;
             case "ArrowLeft":
-                focusParent(-1);
+                if (_event.ctrlKey)
+                    setParent(-1);
+                else
+                    focusParent(-1);
                 break;
             case "ArrowRight":
-                focusParent(1);
+                if (_event.ctrlKey)
+                    setParent(1);
+                else
+                    focusParent(1);
                 break;
             case "Enter":
                 if (activeTextField)
@@ -208,12 +222,66 @@ var FreeMindViewer;
                     focusNode(null);
                 }
                 break;
+            case "KeyY":
+                if (_event.ctrlKey)
+                    loadState();
+                break;
         }
+    }
+    function saveState() {
+        states.push(rootNode.cloneNode(true));
+        if (states.length >= 10)
+            states.shift();
+    }
+    function loadState() {
+        if (states.length <= 0)
+            return;
+        rootNode = states.pop();
+        mindmapData = createXMLFile();
+        createMindmap();
+        redrawWithoutChildren();
     }
     function createXMLFile() {
         let doc = document.implementation.createDocument(null, "node", null);
         doc.documentElement.appendChild(rootNode);
         return doc;
+    }
+    function changeOrder(_dir) {
+        // if (!focusedNode)
+        //   return;
+        // console.log("Here");
+    }
+    function setParent(_dir) {
+        // if (!focusedNode || focusedNode.mapPosition == "root")
+        //   return;
+        // let node: FMVNode = focusedNode;
+        // if (node.mapPosition == "left") {
+        //   if (_dir < 0) {
+        //     if (node.children.length > 0) {
+        //       node.children.forEach(child => {
+        //         changeParent(child, node.parent);
+        //       })
+        //     }
+        //   } else {
+        //     if (node.parent === root)
+        //       node.changeSide();
+        //     else
+        //       changeParent(node, node.parent.parent);
+        //   }
+        // } else {
+        //   if (_dir > 0) {
+        //     if (node.children.length > 0) {
+        //       node.children.forEach(child => {
+        //         changeParent(child, node.parent);
+        //       })
+        //     }
+        //   } else {
+        //     if (node.parent === root)
+        //       node.changeSide();
+        //     else
+        //       changeParent(node, node.parent.parent);
+        //   }
+        // }
     }
     function deleteNode() {
         if (!focusedNode)
@@ -292,6 +360,9 @@ var FreeMindViewer;
             _to.node.appendChild(_of.node);
         mindmapData = createXMLFile();
         createMindmap();
+        focusNode(_of);
+        redrawWithoutChildren();
+        saveState();
     }
     function focusParent(_dir) {
         if (!focusedNode)
@@ -363,6 +434,7 @@ var FreeMindViewer;
             mindmapData = createXMLFile();
             createMindmap();
             focusNode(_node);
+            saveState();
         }
     }
     function clearMap() {
