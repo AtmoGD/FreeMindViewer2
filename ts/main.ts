@@ -367,12 +367,13 @@ namespace FreeMindViewer {
 
     newFMVNode.parent = parent;
     parent.children.push(newFMVNode);
+    fmvNodes.push(newFMVNode);
 
     root.calculateVisibleChildren();
     root.setPosition(0);
 
     createMindmap();
-    redrawWithoutChildren();
+
 
     focusNode(newFMVNode);
     createTextFieldOnNode();
@@ -433,6 +434,7 @@ namespace FreeMindViewer {
     mindmapData = createXMLFile();
     createMindmap();
 
+    _of.fillstyle = "blue";
     focusNode(_of);
     redrawWithoutChildren();
 
@@ -482,12 +484,13 @@ namespace FreeMindViewer {
 
   function focusNode(_node: FMVNode): void {
     if (focusedNode)
-      focusedNode.strokeStile = "black";
+      focusedNode.fillstyle = "black";
 
     focusedNode = _node;
 
     if (focusedNode)
-      focusedNode.strokeStile = "blue";
+      focusedNode.fillstyle = "blue";
+
     redrawWithoutChildren();
   }
 
@@ -514,6 +517,8 @@ namespace FreeMindViewer {
     textField.onblur = () => {
       updateNode(node);
     }
+
+    focusNode(node);
 
     function updateNode(_node: FMVNode): void {
       if (textField.value != "")

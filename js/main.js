@@ -305,10 +305,10 @@ var FreeMindViewer;
         newFMVNode.node.setAttribute("POSITION", parent.mapPosition == "root" ? "left" : parent.mapPosition);
         newFMVNode.parent = parent;
         parent.children.push(newFMVNode);
+        fmvNodes.push(newFMVNode);
         root.calculateVisibleChildren();
         root.setPosition(0);
         createMindmap();
-        redrawWithoutChildren();
         focusNode(newFMVNode);
         createTextFieldOnNode();
     }
@@ -360,6 +360,7 @@ var FreeMindViewer;
             _to.node.appendChild(_of.node);
         mindmapData = createXMLFile();
         createMindmap();
+        _of.fillstyle = "blue";
         focusNode(_of);
         redrawWithoutChildren();
         saveState();
@@ -402,10 +403,10 @@ var FreeMindViewer;
     }
     function focusNode(_node) {
         if (focusedNode)
-            focusedNode.strokeStile = "black";
+            focusedNode.fillstyle = "black";
         focusedNode = _node;
         if (focusedNode)
-            focusedNode.strokeStile = "blue";
+            focusedNode.fillstyle = "blue";
         redrawWithoutChildren();
     }
     function createTextFieldOnNode() {
@@ -426,6 +427,7 @@ var FreeMindViewer;
         textField.onblur = () => {
             updateNode(node);
         };
+        focusNode(node);
         function updateNode(_node) {
             if (textField.value != "")
                 _node.node.setAttribute("TEXT", textField.value);

@@ -8,7 +8,7 @@ var FreeMindViewer;
             this.bezPtY2 = 0;
             this.contentWidth = 0;
             this.childHight = 30;
-            this.strokeStile = "black";
+            this.fillstyle = "black";
             this.parent = parent;
             this.children = new Array();
             this.ctx = ctx;
@@ -75,7 +75,7 @@ var FreeMindViewer;
         }
         drawFMVNode() {
             this.ctx.font = "14px sans-serif";
-            this.ctx.fillStyle = this.strokeStile;
+            this.ctx.fillStyle = this.fillstyle;
             this.ctx.strokeStyle = "transparent";
             let startX;
             this.contentWidth = this.ctx.measureText(this.content).width;
@@ -118,7 +118,7 @@ var FreeMindViewer;
                     this.ctx.bezierCurveTo(this.posX + this.bezPtX1, this.posY, this.parent.posX - this.parent.contentWidth - this.bezPtX2, this.parent.posY, this.parent.posX - this.parent.contentWidth, this.parent.posY);
                 }
             }
-            this.ctx.strokeStyle = this.strokeStile;
+            this.ctx.strokeStyle = this.fillstyle;
             this.ctx.stroke();
             /* this.ctx.closePath(); */
             this.ctx.beginPath();
@@ -149,8 +149,8 @@ var FreeMindViewer;
         }
         drawFMVNode() {
             this.ctx.font = "14px sans-serif";
-            this.ctx.fillStyle = "black";
-            this.ctx.strokeStyle = this.strokeStile;
+            this.ctx.fillStyle = this.fillstyle;
+            this.ctx.strokeStyle = this.fillstyle;
             this.contentWidth = this.ctx.measureText(this.content).width;
             this.pfadrect = new Path2D();
             this.pfadrect.ellipse(this.posX, this.posY, this.contentWidth, this.contentWidth / 2, 0, 0, 2 * Math.PI);

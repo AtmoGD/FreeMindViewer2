@@ -20,7 +20,7 @@ namespace FreeMindViewer {
     public childNumber: number;
     public folded: boolean;
     public childHight: number = 30;
-    public strokeStile: string = "black";
+    public fillstyle: string = "black";
 
     constructor(
       parent: FMVNode,
@@ -103,7 +103,7 @@ namespace FreeMindViewer {
 
     drawFMVNode(): void {
       this.ctx.font = "14px sans-serif";
-      this.ctx.fillStyle = this.strokeStile;
+      this.ctx.fillStyle = this.fillstyle;
       this.ctx.strokeStyle = "transparent";
       let startX: number;
       this.contentWidth = this.ctx.measureText(this.content).width;
@@ -144,7 +144,7 @@ namespace FreeMindViewer {
           this.ctx.bezierCurveTo(this.posX + this.bezPtX1, this.posY, this.parent.posX - this.parent.contentWidth - this.bezPtX2, this.parent.posY, this.parent.posX - this.parent.contentWidth, this.parent.posY);
         }
       }
-      this.ctx.strokeStyle = this.strokeStile;
+      this.ctx.strokeStyle = this.fillstyle;
       this.ctx.stroke();
       /* this.ctx.closePath(); */
 
@@ -182,8 +182,8 @@ namespace FreeMindViewer {
 
     drawFMVNode(): void {
       this.ctx.font = "14px sans-serif";
-      this.ctx.fillStyle = "black";
-      this.ctx.strokeStyle = this.strokeStile;
+      this.ctx.fillStyle = this.fillstyle;
+      this.ctx.strokeStyle = this.fillstyle;
       this.contentWidth = this.ctx.measureText(this.content).width;
       this.pfadrect = new Path2D();
       this.pfadrect.ellipse(this.posX, this.posY, this.contentWidth, this.contentWidth / 2, 0, 0, 2 * Math.PI);
