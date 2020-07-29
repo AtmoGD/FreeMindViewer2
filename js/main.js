@@ -258,7 +258,6 @@ var FreeMindViewer;
         for (let i = 0; i < focusedNode.parent.children.length; i++) {
             elements.push(focusedNode.parent.children[i].node);
         }
-        console.log(elements);
         for (let i = 0; i < elements.length; i++) {
             if (elements[i] === focusedNode.node)
                 index = i;
@@ -286,8 +285,8 @@ var FreeMindViewer;
         focusNode(findNodeByID(focusedNode.node.getAttribute("ID")));
     }
     function setParent(_dir) {
-        // if (!focusedNode || focusedNode.mapPosition == "root")
-        //   return;
+        if (!focusedNode || focusedNode.mapPosition == "root")
+            return;
         // let node: FMVNode = focusedNode;
         // if (node.mapPosition == "left") {
         //   if (_dir < 0) {

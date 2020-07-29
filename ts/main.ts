@@ -312,7 +312,6 @@ namespace FreeMindViewer {
       elements.push(focusedNode.parent.children[i].node);
     }
 
-    console.log(elements);
     for (let i: number = 0; i < elements.length; i++) {
       if (elements[i] === focusedNode.node)
         index = i;
@@ -348,8 +347,8 @@ namespace FreeMindViewer {
   }
 
   function setParent(_dir: number): void {
-    // if (!focusedNode || focusedNode.mapPosition == "root")
-    //   return;
+    if (!focusedNode || focusedNode.mapPosition == "root")
+      return;
 
     // let node: FMVNode = focusedNode;
 
