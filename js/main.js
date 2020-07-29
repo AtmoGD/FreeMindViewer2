@@ -282,6 +282,7 @@ var FreeMindViewer;
         });
         mindmapData = createXMLFile();
         createMindmap();
+        saveState();
         focusNode(findNodeByID(focusedNode.node.getAttribute("ID")));
     }
     function setParent(_dir) {
