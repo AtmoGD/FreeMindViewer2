@@ -303,8 +303,46 @@ namespace FreeMindViewer {
   }
 
   function changeOrder(_dir: number): void {
-    if (!focusedNode)
+    if (!focusedNode || focusedNode === root)
       return;
+
+    let index: number = 0;
+    let elements: Node[] = [];
+    for (let i: number = 0; i < focusedNode.parent.children.length; i++) {
+      elements.push(focusedNode.parent.children[i].node);
+    }
+
+    console.log(elements);
+    for (let i: number = 0; i < elements.length; i++) {
+      if (elements[i] === focusedNode.node)
+        index = i;
+    }
+
+    if (_dir < 0) {
+      if (index >= elements.length)
+        return;
+
+      let el: Node[] = elements.splice(index, 1);
+      elements.splice(index + 1, 0, el[0]);
+    } else {
+      if (index <= 0)
+        return;
+
+      let el: Node[] = elements.splice(index, 1);
+      elements.splice(index - 1, 0, el[0]);
+    }
+
+    while (focusedNode.parent.node.children.length > 0)
+      focusedNode.parent.node.removeChild(focusedNode.parent.node.children[0]);
+
+    elements.forEach(el => {
+      focusedNode.parent.node.appendChild(el);
+    })
+
+    mindmapData = createXMLFile();
+    createMindmap();
+
+    focusNode(findNodeByID(focusedNode.node.getAttribute("ID")));
   }
 
   function setParent(_dir: number): void {

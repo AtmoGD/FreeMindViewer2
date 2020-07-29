@@ -251,8 +251,38 @@ var FreeMindViewer;
         return doc;
     }
     function changeOrder(_dir) {
-        if (!focusedNode)
+        if (!focusedNode || focusedNode === root)
             return;
+        let index = 0;
+        let elements = [];
+        for (let i = 0; i < focusedNode.parent.children.length; i++) {
+            elements.push(focusedNode.parent.children[i].node);
+        }
+        console.log(elements);
+        for (let i = 0; i < elements.length; i++) {
+            if (elements[i] === focusedNode.node)
+                index = i;
+        }
+        if (_dir < 0) {
+            if (index >= elements.length)
+                return;
+            let el = elements.splice(index, 1);
+            elements.splice(index + 1, 0, el[0]);
+        }
+        else {
+            if (index <= 0)
+                return;
+            let el = elements.splice(index, 1);
+            elements.splice(index - 1, 0, el[0]);
+        }
+        while (focusedNode.parent.node.children.length > 0)
+            focusedNode.parent.node.removeChild(focusedNode.parent.node.children[0]);
+        elements.forEach(el => {
+            focusedNode.parent.node.appendChild(el);
+        });
+        mindmapData = createXMLFile();
+        createMindmap();
+        focusNode(findNodeByID(focusedNode.node.getAttribute("ID")));
     }
     function setParent(_dir) {
         // if (!focusedNode || focusedNode.mapPosition == "root")
