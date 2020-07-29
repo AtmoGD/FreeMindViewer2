@@ -150,6 +150,11 @@ namespace FreeMindViewer {
   }
 
   function createFMVNodes(rootNode: Element, parentFMVNode: FMVNode): void {
+    let id: string = rootNode.getAttribute("ID");
+    if (!id) {
+      rootNode.setAttribute("ID", createID());
+    }
+
     // only continue if current root has children
     if (rootNode.hasChildNodes()) {
       let children: Element[] = getChildElements(rootNode);
@@ -298,10 +303,8 @@ namespace FreeMindViewer {
   }
 
   function changeOrder(_dir: number): void {
-    // if (!focusedNode)
-    //   return;
-
-    // console.log("Here");
+    if (!focusedNode)
+      return;
   }
 
   function setParent(_dir: number): void {
@@ -364,6 +367,7 @@ namespace FreeMindViewer {
     newFMVNode.node = newNode;
     newFMVNode.node.setAttribute("TEXT", "new Node");
     newFMVNode.node.setAttribute("POSITION", parent.mapPosition == "root" ? "left" : parent.mapPosition);
+    newFMVNode.node.setAttribute("ID", createID());
 
     newFMVNode.parent = parent;
     parent.children.push(newFMVNode);
@@ -374,8 +378,7 @@ namespace FreeMindViewer {
 
     createMindmap();
 
-
-    focusNode(newFMVNode);
+    focusNode(findNodeByID(newFMVNode.node.getAttribute("ID")));
     createTextFieldOnNode();
   }
 
@@ -518,8 +521,6 @@ namespace FreeMindViewer {
       updateNode(node);
     }
 
-    focusNode(node);
-
     function updateNode(_node: FMVNode): void {
       if (textField.value != "")
         _node.node.setAttribute("TEXT", textField.value);
@@ -530,10 +531,22 @@ namespace FreeMindViewer {
       mindmapData = createXMLFile();
       createMindmap();
 
-      focusNode(_node);
-
       saveState();
+      focusNode(findNodeByID(node.node.getAttribute("ID")));
     }
+  }
+
+  function findNodeByID(_id: string): FMVNode {
+    let nodeByID: FMVNode = null;
+    fmvNodes.forEach(node => {
+      if (node.node) {
+        let id: string = node.node.getAttribute("ID");
+        if (_id == id) {
+          nodeByID = node;
+        }
+      }
+    });
+    return nodeByID;
   }
 
   function clearMap(): void {
@@ -554,5 +567,22 @@ namespace FreeMindViewer {
       console.log("Error in URL-Parameters: " + _e);
       return JSON.parse("{}");
     }
+  }
+
+  function createID(): string {
+    let id: string = "ID_";
+    let randomNumber: number = Math.floor(Math.random() * 1000000000);
+    id += randomNumber;
+
+    fmvNodes.forEach(node => {
+      if (node.node) {
+        let nodeID: string = node.node.getAttribute("ID");
+        if (nodeID && nodeID == id) {
+          return createID();
+        }
+      }
+    })
+
+    return id;
   }
 }

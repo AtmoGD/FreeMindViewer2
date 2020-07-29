@@ -118,6 +118,10 @@ var FreeMindViewer;
         root.drawFMVNode();
     }
     function createFMVNodes(rootNode, parentFMVNode) {
+        let id = rootNode.getAttribute("ID");
+        if (!id) {
+            rootNode.setAttribute("ID", createID());
+        }
         // only continue if current root has children
         if (rootNode.hasChildNodes()) {
             let children = getChildElements(rootNode);
@@ -247,9 +251,8 @@ var FreeMindViewer;
         return doc;
     }
     function changeOrder(_dir) {
-        // if (!focusedNode)
-        //   return;
-        // console.log("Here");
+        if (!focusedNode)
+            return;
     }
     function setParent(_dir) {
         // if (!focusedNode || focusedNode.mapPosition == "root")
@@ -303,13 +306,14 @@ var FreeMindViewer;
         newFMVNode.node = newNode;
         newFMVNode.node.setAttribute("TEXT", "new Node");
         newFMVNode.node.setAttribute("POSITION", parent.mapPosition == "root" ? "left" : parent.mapPosition);
+        newFMVNode.node.setAttribute("ID", createID());
         newFMVNode.parent = parent;
         parent.children.push(newFMVNode);
         fmvNodes.push(newFMVNode);
         root.calculateVisibleChildren();
         root.setPosition(0);
         createMindmap();
-        focusNode(newFMVNode);
+        focusNode(findNodeByID(newFMVNode.node.getAttribute("ID")));
         createTextFieldOnNode();
     }
     function onMouseDown(_event) {
@@ -427,7 +431,6 @@ var FreeMindViewer;
         textField.onblur = () => {
             updateNode(node);
         };
-        focusNode(node);
         function updateNode(_node) {
             if (textField.value != "")
                 _node.node.setAttribute("TEXT", textField.value);
@@ -435,9 +438,21 @@ var FreeMindViewer;
             textField.remove();
             mindmapData = createXMLFile();
             createMindmap();
-            focusNode(_node);
             saveState();
+            focusNode(findNodeByID(node.node.getAttribute("ID")));
         }
+    }
+    function findNodeByID(_id) {
+        let nodeByID = null;
+        fmvNodes.forEach(node => {
+            if (node.node) {
+                let id = node.node.getAttribute("ID");
+                if (_id == id) {
+                    nodeByID = node;
+                }
+            }
+        });
+        return nodeByID;
     }
     function clearMap() {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // clears the canvas
@@ -457,6 +472,20 @@ var FreeMindViewer;
             console.log("Error in URL-Parameters: " + _e);
             return JSON.parse("{}");
         }
+    }
+    function createID() {
+        let id = "ID_";
+        let randomNumber = Math.floor(Math.random() * 1000000000);
+        id += randomNumber;
+        fmvNodes.forEach(node => {
+            if (node.node) {
+                let nodeID = node.node.getAttribute("ID");
+                if (nodeID && nodeID == id) {
+                    return createID();
+                }
+            }
+        });
+        return id;
     }
 })(FreeMindViewer || (FreeMindViewer = {}));
 //# sourceMappingURL=main.js.map
