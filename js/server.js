@@ -13,8 +13,8 @@ const HTTP = require("http");
 const Url = require("url");
 const auth_1 = require("@octokit/auth");
 const rest_1 = require("@octokit/rest");
-const CLIENT_ID = "47db66f43b3e5e0c0b25";
-const CLIENT_SECRET = "d1abfd3be9efe995399faad6a2f947b2dc4149a9";
+const CLIENT_ID = "839b335fac4d4120ca40";
+const CLIENT_SECRET = "cac37ff96234ff22634dd42053013531f55d1dbd";
 const SCOPE = "repo, user";
 //namespace FreeMindViewer { 
 let server = HTTP.createServer();

@@ -24,8 +24,8 @@ export interface Parameters {
   branch: string | null;
 }
 
-const CLIENT_ID: string = "47db66f43b3e5e0c0b25";
-const CLIENT_SECRET: string = "d1abfd3be9efe995399faad6a2f947b2dc4149a9";
+const CLIENT_ID: string = "839b335fac4d4120ca40";
+const CLIENT_SECRET: string = "cac37ff96234ff22634dd42053013531f55d1dbd";
 const SCOPE: string = "repo, user";
 
 //namespace FreeMindViewer { 
