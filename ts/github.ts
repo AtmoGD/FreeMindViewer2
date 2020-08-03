@@ -1,5 +1,5 @@
 namespace FreeMindViewer {
-  export let path: string = "https://free-mind-viewer-2.herokuapp.com/";
+  export let path: string = "https://free-mind-viewer-2.herokuapp.com";
 
   export function authorize(): void {
     if (loginSpan.innerText != "") {

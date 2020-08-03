@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var FreeMindViewer;
 (function (FreeMindViewer) {
-    FreeMindViewer.path = "https://free-mind-viewer-2.herokuapp.com/";
+    FreeMindViewer.path = "https://free-mind-viewer-2.herokuapp.com";
     function authorize() {
         if (FreeMindViewer.loginSpan.innerText != "") {
             logout();
