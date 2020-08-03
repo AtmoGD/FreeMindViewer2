@@ -75,6 +75,7 @@ var FreeMindViewer;
                 return;
             let url = path + "?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
             let res = yield fetch(url);
+            console.log(res);
             FreeMindViewer.fetchXML(yield res.text());
         });
     }

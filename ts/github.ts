@@ -64,6 +64,7 @@ namespace FreeMindViewer {
     let url: string = path + "?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
 
     let res = await fetch(url);
+    console.log(res);
     fetchXML(await res.text());
   }
 
@@ -74,6 +75,7 @@ namespace FreeMindViewer {
 
     return username ? username : "Not able to fetch Username";
   }
+
   export async function fetchAccesstoken(_code: string, _state: string): Promise<boolean> {
     let url: string = path + "?a=fetchToken&code=" + _code + "&state=" + _state;
     let response: Response = await fetch(url);
