@@ -285,8 +285,38 @@ var FreeMindViewer;
         focusNode(findNodeByID(focusedNode.node.getAttribute("ID")));
     }
     function setParent(_dir) {
-        if (!focusedNode || focusedNode.mapPosition == "root")
+        if (!focusedNode || focusedNode === root)
             return;
+        let node = focusedNode;
+        if (node.mapPosition == "left") {
+            if (_dir < 0) {
+                if (node.children.length <= 0)
+                    return;
+                node.children.forEach(child => {
+                    changeParent(child, node.parent);
+                });
+            }
+            else {
+                if (node.parent === root)
+                    return;
+                changeParent(node, node.parent.parent);
+            }
+        }
+        else {
+            if (_dir < 0) {
+                if (node.parent === root)
+                    return;
+                changeParent(node, node.parent.parent);
+            }
+            else {
+                if (node.children.length <= 0)
+                    return;
+                node.children.forEach(child => {
+                    changeParent(child, node.parent);
+                });
+            }
+        }
+        focusNode(findNodeByID(node.node.getAttribute("ID")));
         // let node: FMVNode = focusedNode;
         // if (node.mapPosition == "left") {
         //   if (_dir < 0) {
