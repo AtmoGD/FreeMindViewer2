@@ -9,13 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var FreeMindViewer;
 (function (FreeMindViewer) {
+    FreeMindViewer.path = "https://free-mind-viewer-2.herokuapp.com/";
     function authorize() {
         if (FreeMindViewer.loginSpan.innerText != "") {
             logout();
             return;
         }
         let state = generateAndSaveState(15);
-        window.location.href = "http://localhost:5001?a=auth&state=" + state; //Tell the server to redirect the client to github
+        window.location.href = FreeMindViewer.path + "?a=auth&state=" + state; //Tell the server to redirect the client to github
     }
     FreeMindViewer.authorize = authorize;
     function logout() {
@@ -53,7 +54,7 @@ var FreeMindViewer;
             let branch = (_d = document.querySelector("#branchInput")) === null || _d === void 0 ? void 0 : _d.value;
             if (owner == "" || repo == "" || path == "" || branch == "")
                 return;
-            let url = "http://localhost:5001?a=saveFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
+            let url = path + "?a=saveFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
             let response = yield fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain" },
@@ -72,7 +73,7 @@ var FreeMindViewer;
             let branch = (_d = document.querySelector("#branchInput")) === null || _d === void 0 ? void 0 : _d.value;
             if (owner == "" || repo == "" || path == "" || branch == "")
                 return;
-            let url = "http://localhost:5001?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
+            let url = path + "?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
             let res = yield fetch(url);
             FreeMindViewer.fetchXML(yield res.text());
         });
@@ -80,7 +81,7 @@ var FreeMindViewer;
     FreeMindViewer.fetchFile = fetchFile;
     function fetchUsername() {
         return __awaiter(this, void 0, void 0, function* () {
-            let url = "http://localhost:5001?a=fetchUsername&at=" + getCookie("at");
+            let url = FreeMindViewer.path + "?a=fetchUsername&at=" + getCookie("at");
             let response = yield fetch(url);
             let username = yield response.text();
             return username ? username : "Not able to fetch Username";
@@ -89,7 +90,7 @@ var FreeMindViewer;
     FreeMindViewer.fetchUsername = fetchUsername;
     function fetchAccesstoken(_code, _state) {
         return __awaiter(this, void 0, void 0, function* () {
-            let url = "http://localhost:5001/?a=fetchToken&code=" + _code + "&state=" + _state;
+            let url = FreeMindViewer.path + "?a=fetchToken&code=" + _code + "&state=" + _state;
             let response = yield fetch(url);
             let auth = yield response.text();
             if (auth) {

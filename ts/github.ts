@@ -1,4 +1,6 @@
 namespace FreeMindViewer {
+  export let path: string = "https://free-mind-viewer-2.herokuapp.com/";
+
   export function authorize(): void {
     if (loginSpan.innerText != "") {
       logout();
@@ -6,7 +8,7 @@ namespace FreeMindViewer {
     }
 
     let state: string = generateAndSaveState(15);
-    window.location.href = "http://localhost:5001?a=auth&state=" + state;                      //Tell the server to redirect the client to github
+    window.location.href = path + "?a=auth&state=" + state;                      //Tell the server to redirect the client to github
   }
 
   export function logout(): void {
@@ -40,7 +42,7 @@ namespace FreeMindViewer {
     if (owner == "" || repo == "" || path == "" || branch == "")
       return;
 
-    let url: string = "http://localhost:5001?a=saveFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
+    let url: string = path + "?a=saveFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
 
     let response: Response = await fetch(url, {
       method: "POST",
@@ -59,21 +61,21 @@ namespace FreeMindViewer {
     if (owner == "" || repo == "" || path == "" || branch == "")
       return;
 
-    let url: string = "http://localhost:5001?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
+    let url: string = path + "?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
 
     let res = await fetch(url);
     fetchXML(await res.text());
   }
 
   export async function fetchUsername(): Promise<string> {
-    let url: string = "http://localhost:5001?a=fetchUsername&at=" + getCookie("at");
+    let url: string = path + "?a=fetchUsername&at=" + getCookie("at");
     let response: Response = await fetch(url);
     let username: string = await response.text();
 
     return username ? username : "Not able to fetch Username";
   }
   export async function fetchAccesstoken(_code: string, _state: string): Promise<boolean> {
-    let url: string = "http://localhost:5001/?a=fetchToken&code=" + _code + "&state=" + _state;
+    let url: string = path + "?a=fetchToken&code=" + _code + "&state=" + _state;
     let response: Response = await fetch(url);
     let auth: string = await response.text();
     if (auth) {
