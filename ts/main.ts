@@ -82,6 +82,7 @@ namespace FreeMindViewer {
 
   export async function fetchXML(_path?: string): Promise<void> {
     let response: Response | null = null;
+    console.log(_path);
     if (_path)
       response = await fetch(_path);
     else
