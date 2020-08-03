@@ -68,7 +68,6 @@ var FreeMindViewer;
     function fetchXML(_path) {
         return __awaiter(this, void 0, void 0, function* () {
             let response = null;
-            console.log(_path);
             if (_path == "" || !_path)
                 response = yield fetch(params.path + "/" + params.map);
             const xmlText = _path ? _path : yield response.text();
