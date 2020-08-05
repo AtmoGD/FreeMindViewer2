@@ -171,13 +171,17 @@ var FreeMindViewer;
         // console.log(_event);
         switch (_event.code) {
             case "Space":
-                if (document.activeElement.nodeName.toLowerCase() != "input") {
+                if (document.activeElement.nodeName.toLowerCase() != "input" && !focusedNode) {
                     // prevent default spacebar event (scrolling to bottom)
                     _event.preventDefault();
                     FreeMindViewer.rootNodeX = canvas.width / 2;
                     FreeMindViewer.rootNodeY = canvas.height / 2;
                     redrawWithoutChildren();
                 }
+                if (_event.ctrlKey)
+                    foldNode(root, true);
+                if (focusedNode)
+                    foldNode(focusedNode, false);
                 break;
             case "F2":
                 createTextFieldOnNode();
@@ -247,6 +251,15 @@ var FreeMindViewer;
         let doc = document.implementation.createDocument(null, "node", null);
         doc.documentElement.appendChild(rootNode);
         return doc;
+    }
+    function foldNode(_node, _withChildren) {
+        _node.folded = !_node.folded;
+        if (_withChildren) {
+            _node.children.forEach(child => {
+                foldNode(child, true);
+            });
+        }
+        redrawWithoutChildren();
     }
     function changeOrder(_dir) {
         if (!focusedNode || focusedNode === root)

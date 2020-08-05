@@ -218,13 +218,19 @@ namespace FreeMindViewer {
 
     switch (_event.code) {
       case "Space":
-        if (document.activeElement.nodeName.toLowerCase() != "input") {
+        if (document.activeElement.nodeName.toLowerCase() != "input" && !focusedNode) {
           // prevent default spacebar event (scrolling to bottom)
           _event.preventDefault();
           rootNodeX = canvas.width / 2;
           rootNodeY = canvas.height / 2;
           redrawWithoutChildren();
         }
+        
+        if (_event.ctrlKey)
+          foldNode(root, true);
+
+        if (focusedNode)
+          foldNode(focusedNode, false);
         break;
       case "F2":
         createTextFieldOnNode();
@@ -298,6 +304,18 @@ namespace FreeMindViewer {
     let doc: XMLDocument = document.implementation.createDocument(null, "node", null);
     doc.documentElement.appendChild(rootNode);
     return doc;
+  }
+
+  function foldNode(_node: FMVNode, _withChildren: boolean): void {
+
+    _node.folded = !_node.folded;
+
+    if (_withChildren) {
+      _node.children.forEach(child => {
+        foldNode(child, true);
+      });
+    }
+    redrawWithoutChildren();
   }
 
   function changeOrder(_dir: number): void {
