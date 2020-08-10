@@ -308,14 +308,15 @@ namespace FreeMindViewer {
 
   function foldNode(_node: FMVNode, _withChildren: boolean): void {
 
-    _node.folded = !_node.folded;
+    //_node.folded = !_node.folded;
+    _node.node.setAttribute("FOLDED", !_node.folded + "");
 
     if (_withChildren) {
       _node.children.forEach(child => {
         foldNode(child, true);
       });
     }
-    redrawWithoutChildren();
+    createMindmap();
   }
 
   function changeOrder(_dir: number): void {

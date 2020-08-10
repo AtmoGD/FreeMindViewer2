@@ -253,13 +253,14 @@ var FreeMindViewer;
         return doc;
     }
     function foldNode(_node, _withChildren) {
-        _node.folded = !_node.folded;
+        //_node.folded = !_node.folded;
+        _node.node.setAttribute("FOLDED", !_node.folded + "");
         if (_withChildren) {
             _node.children.forEach(child => {
                 foldNode(child, true);
             });
         }
-        redrawWithoutChildren();
+        createMindmap();
     }
     function changeOrder(_dir) {
         if (!focusedNode || focusedNode === root)
