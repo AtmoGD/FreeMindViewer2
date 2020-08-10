@@ -152,7 +152,7 @@ namespace FreeMindViewer {
     if (!id) {
       rootNode.setAttribute("ID", createID());
     }
-
+    rootNode.setAttribute("FOLDED", "true");
     // only continue if current root has children
     if (rootNode.hasChildNodes()) {
       let children: Element[] = getChildElements(rootNode);
