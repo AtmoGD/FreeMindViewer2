@@ -20,6 +20,7 @@ var FreeMindViewer;
     let rootNode; // first actual node of the mindmap
     let root;
     let fmvNodes;
+    let allFolded = false;
     let activeTextField = null;
     function init() {
         fmvNodes = [];
@@ -120,7 +121,6 @@ var FreeMindViewer;
         if (!id) {
             rootNode.setAttribute("ID", createID());
         }
-        rootNode.setAttribute("FOLDED", "true");
         // only continue if current root has children
         if (rootNode.hasChildNodes()) {
             let children = getChildElements(rootNode);
@@ -172,17 +172,29 @@ var FreeMindViewer;
         // console.log(_event);
         switch (_event.code) {
             case "Space":
+                if (_event.ctrlKey) {
+                    root.children.forEach(child => {
+                        foldNode(child, true, allFolded);
+                    });
+                    allFolded = !allFolded;
+                    createMindmap();
+                    return;
+                }
+                if (focusedNode) {
+                    let id = focusedNode.node.getAttribute("ID");
+                    foldNode(focusedNode, false);
+                    createMindmap();
+                    focusNode(findNodeByID(id));
+                    return;
+                }
                 if (document.activeElement.nodeName.toLowerCase() != "input" && !focusedNode) {
                     // prevent default spacebar event (scrolling to bottom)
                     _event.preventDefault();
                     FreeMindViewer.rootNodeX = canvas.width / 2;
                     FreeMindViewer.rootNodeY = canvas.height / 2;
                     redrawWithoutChildren();
+                    return;
                 }
-                if (_event.ctrlKey)
-                    foldNode(root, true);
-                if (focusedNode)
-                    foldNode(focusedNode, false);
                 break;
             case "F2":
                 createTextFieldOnNode();
@@ -253,15 +265,13 @@ var FreeMindViewer;
         doc.documentElement.appendChild(rootNode);
         return doc;
     }
-    function foldNode(_node, _withChildren) {
-        //_node.folded = !_node.folded;
-        _node.node.setAttribute("FOLDED", !_node.folded + "");
+    function foldNode(_node, _withChildren, _state) {
+        _node.node.setAttribute("FOLDED", (_state != null ? _state : !_node.folded) + "");
         if (_withChildren) {
             _node.children.forEach(child => {
                 foldNode(child, true);
             });
         }
-        createMindmap();
     }
     function changeOrder(_dir) {
         if (!focusedNode || focusedNode === root)

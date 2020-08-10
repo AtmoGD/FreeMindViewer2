@@ -26,6 +26,7 @@ namespace FreeMindViewer {
   let rootNode: Element; // first actual node of the mindmap
   let root: FMVRootNode;
   let fmvNodes: FMVNode[];
+  let allFolded: boolean = false;
 
   let activeTextField: HTMLInputElement = null;
 
@@ -152,7 +153,7 @@ namespace FreeMindViewer {
     if (!id) {
       rootNode.setAttribute("ID", createID());
     }
-    rootNode.setAttribute("FOLDED", "true");
+
     // only continue if current root has children
     if (rootNode.hasChildNodes()) {
       let children: Element[] = getChildElements(rootNode);
@@ -218,19 +219,31 @@ namespace FreeMindViewer {
 
     switch (_event.code) {
       case "Space":
+        if (_event.ctrlKey) {
+          root.children.forEach(child => {
+            foldNode(child, true, allFolded);
+          });
+          allFolded = !allFolded;
+          createMindmap();
+          return;
+        }
+
+        if (focusedNode) {
+          let id: string = focusedNode.node.getAttribute("ID");
+          foldNode(focusedNode, false);
+          createMindmap();
+          focusNode(findNodeByID(id));
+          return;
+        }
+
         if (document.activeElement.nodeName.toLowerCase() != "input" && !focusedNode) {
           // prevent default spacebar event (scrolling to bottom)
           _event.preventDefault();
           rootNodeX = canvas.width / 2;
           rootNodeY = canvas.height / 2;
           redrawWithoutChildren();
+          return;
         }
-        
-        if (_event.ctrlKey)
-          foldNode(root, true);
-
-        if (focusedNode)
-          foldNode(focusedNode, false);
         break;
       case "F2":
         createTextFieldOnNode();
@@ -306,17 +319,16 @@ namespace FreeMindViewer {
     return doc;
   }
 
-  function foldNode(_node: FMVNode, _withChildren: boolean): void {
+  function foldNode(_node: FMVNode, _withChildren: boolean, _state?: boolean): void {
 
-    //_node.folded = !_node.folded;
-    _node.node.setAttribute("FOLDED", !_node.folded + "");
+    _node.node.setAttribute("FOLDED", (_state != null ? _state : !_node.folded) + "");
 
     if (_withChildren) {
       _node.children.forEach(child => {
         foldNode(child, true);
       });
     }
-    createMindmap();
+
   }
 
   function changeOrder(_dir: number): void {
