@@ -321,13 +321,12 @@ namespace FreeMindViewer {
   }
 
   function foldNode(_node: FMVNode, _withChildren: boolean, _state?: boolean): void {
-    saveState();
 
     _node.node.setAttribute("FOLDED", (_state != null ? _state : !_node.folded) + "");
 
     if (_withChildren) {
       _node.children.forEach(child => {
-        foldNode(child, true);
+        foldNode(child, true, _state);
       });
     }
 
@@ -586,7 +585,7 @@ namespace FreeMindViewer {
       return;
 
     saveState();
-    
+
     let textField: HTMLInputElement = document.createElement("input");
     textField.style.position = "fixed";
 

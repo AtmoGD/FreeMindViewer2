@@ -267,11 +267,10 @@ var FreeMindViewer;
         return doc;
     }
     function foldNode(_node, _withChildren, _state) {
-        saveState();
         _node.node.setAttribute("FOLDED", (_state != null ? _state : !_node.folded) + "");
         if (_withChildren) {
             _node.children.forEach(child => {
-                foldNode(child, true);
+                foldNode(child, true, _state);
             });
         }
     }
