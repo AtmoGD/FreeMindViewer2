@@ -140,6 +140,7 @@ namespace FreeMindViewer {
       rootNode.getAttribute("TEXT")
     );
     fmvNodes.push(root);
+    root.node = rootNode;
 
     // Use root FMVNode as starting point and create all subFMVNodes
     createFMVNodes(rootNode, root);
@@ -299,7 +300,7 @@ namespace FreeMindViewer {
   function saveState(): void {
     states.push(<Element>rootNode.cloneNode(true));
 
-    if (states.length >= 10)
+    if (states.length >= 100)
       states.shift();
   }
 
@@ -320,6 +321,7 @@ namespace FreeMindViewer {
   }
 
   function foldNode(_node: FMVNode, _withChildren: boolean, _state?: boolean): void {
+    saveState();
 
     _node.node.setAttribute("FOLDED", (_state != null ? _state : !_node.folded) + "");
 
@@ -334,6 +336,8 @@ namespace FreeMindViewer {
   function changeOrder(_dir: number): void {
     if (!focusedNode || focusedNode === root)
       return;
+
+    saveState();
 
     let index: number = 0;
     let elements: Node[] = [];
@@ -370,7 +374,7 @@ namespace FreeMindViewer {
     mindmapData = createXMLFile();
     createMindmap();
 
-    saveState();
+    // saveState();
 
     focusNode(findNodeByID(focusedNode.node.getAttribute("ID")));
   }
@@ -379,73 +383,41 @@ namespace FreeMindViewer {
     if (!focusedNode || focusedNode === root)
       return;
 
+    saveState();
+
     let node: FMVNode = focusedNode;
+    let id: string = focusedNode.node.getAttribute("ID");
 
     if (node.mapPosition == "left") {
       if (_dir < 0) {
-        if (node.children.length <= 0)
-          return;
 
-        node.children.forEach(child => {
-          changeParent(child, node.parent);
-        })
+        focusSibling(1);
+        changeParent(node, focusedNode);
 
       } else {
         if (node.parent === root)
-          return;
-
-        changeParent(node, node.parent.parent);
+          node.changeSide();
+        else
+          changeParent(node, node.parent.parent);
       }
     } else {
       if (_dir < 0) {
         if (node.parent === root)
-          return;
-
-        changeParent(node, node.parent.parent);
+          node.changeSide();
+        else
+          changeParent(node, node.parent.parent);
       } else {
-        if (node.children.length <= 0)
-          return;
-
-        node.children.forEach(child => {
-          changeParent(child, node.parent);
-        })
+        focusSibling(1);
+        changeParent(node, focusedNode);
       }
     }
 
-    focusNode(findNodeByID(node.node.getAttribute("ID")));
-
-    // let node: FMVNode = focusedNode;
-
-    // if (node.mapPosition == "left") {
-    //   if (_dir < 0) {
-    //     if (node.children.length > 0) {
-    //       node.children.forEach(child => {
-    //         changeParent(child, node.parent);
-    //       })
-    //     }
-    //   } else {
-    //     if (node.parent === root)
-    //       node.changeSide();
-    //     else
-    //       changeParent(node, node.parent.parent);
-    //   }
-    // } else {
-    //   if (_dir > 0) {
-    //     if (node.children.length > 0) {
-    //       node.children.forEach(child => {
-    //         changeParent(child, node.parent);
-    //       })
-    //     }
-    //   } else {
-    //     if (node.parent === root)
-    //       node.changeSide();
-    //     else
-    //       changeParent(node, node.parent.parent);
-    //   }
-    // }
+    focusNode(findNodeByID(id));
   }
 
   function deleteNode(): void {
+    saveState();
+
     if (!focusedNode)
       return;
 
@@ -458,6 +430,8 @@ namespace FreeMindViewer {
   }
 
   function createNewNode(): void {
+    saveState();
+
     let parent: FMVNode = focusedNode ? focusedNode : root;
 
     let newNode: Element = document.createElement("node");
@@ -527,6 +501,8 @@ namespace FreeMindViewer {
   }
 
   function changeParent(_of: FMVNode, _to: FMVNode): void {
+    saveState();
+
     if (_of.node.contains(_to.node))
       return;
 
@@ -544,13 +520,14 @@ namespace FreeMindViewer {
     focusNode(_of);
     redrawWithoutChildren();
 
-    saveState();
+    // saveState();
   }
 
   function focusParent(_dir: number) {
     if (!focusedNode)
       return;
 
+    saveState();
 
     if (focusedNode === root) {
       root.children.forEach(el => {
@@ -575,6 +552,8 @@ namespace FreeMindViewer {
     if (!focusedNode)
       return;
 
+    saveState();
+
     for (let i: number = 0; i < focusedNode.parent.children.length; i++) {
       if (focusedNode.parent.children[i] === focusedNode) {
         if (_dir < 0) {
@@ -589,6 +568,8 @@ namespace FreeMindViewer {
   }
 
   function focusNode(_node: FMVNode): void {
+    saveState();
+
     if (focusedNode)
       focusedNode.fillstyle = "black";
 
@@ -604,6 +585,8 @@ namespace FreeMindViewer {
     if (!focusedNode)
       return;
 
+    saveState();
+    
     let textField: HTMLInputElement = document.createElement("input");
     textField.style.position = "fixed";
 

@@ -110,6 +110,7 @@ var FreeMindViewer;
         // create root FMVNode
         root = new FreeMindViewer.FMVRootNode(ctx, rootNode.getAttribute("TEXT"));
         fmvNodes.push(root);
+        root.node = rootNode;
         // Use root FMVNode as starting point and create all subFMVNodes
         createFMVNodes(rootNode, root);
         root.calculateVisibleChildren();
@@ -249,7 +250,7 @@ var FreeMindViewer;
     }
     function saveState() {
         states.push(rootNode.cloneNode(true));
-        if (states.length >= 10)
+        if (states.length >= 100)
             states.shift();
     }
     function loadState() {
@@ -266,6 +267,7 @@ var FreeMindViewer;
         return doc;
     }
     function foldNode(_node, _withChildren, _state) {
+        saveState();
         _node.node.setAttribute("FOLDED", (_state != null ? _state : !_node.folded) + "");
         if (_withChildren) {
             _node.children.forEach(child => {
@@ -276,6 +278,7 @@ var FreeMindViewer;
     function changeOrder(_dir) {
         if (!focusedNode || focusedNode === root)
             return;
+        saveState();
         let index = 0;
         let elements = [];
         for (let i = 0; i < focusedNode.parent.children.length; i++) {
@@ -304,72 +307,43 @@ var FreeMindViewer;
         });
         mindmapData = createXMLFile();
         createMindmap();
-        saveState();
+        // saveState();
         focusNode(findNodeByID(focusedNode.node.getAttribute("ID")));
     }
     function setParent(_dir) {
         if (!focusedNode || focusedNode === root)
             return;
+        saveState();
         let node = focusedNode;
+        let id = focusedNode.node.getAttribute("ID");
         if (node.mapPosition == "left") {
             if (_dir < 0) {
-                if (node.children.length <= 0)
-                    return;
-                node.children.forEach(child => {
-                    changeParent(child, node.parent);
-                });
+                focusSibling(1);
+                changeParent(node, focusedNode);
             }
             else {
                 if (node.parent === root)
-                    return;
-                changeParent(node, node.parent.parent);
+                    node.changeSide();
+                else
+                    changeParent(node, node.parent.parent);
             }
         }
         else {
             if (_dir < 0) {
                 if (node.parent === root)
-                    return;
-                changeParent(node, node.parent.parent);
+                    node.changeSide();
+                else
+                    changeParent(node, node.parent.parent);
             }
             else {
-                if (node.children.length <= 0)
-                    return;
-                node.children.forEach(child => {
-                    changeParent(child, node.parent);
-                });
+                focusSibling(1);
+                changeParent(node, focusedNode);
             }
         }
-        focusNode(findNodeByID(node.node.getAttribute("ID")));
-        // let node: FMVNode = focusedNode;
-        // if (node.mapPosition == "left") {
-        //   if (_dir < 0) {
-        //     if (node.children.length > 0) {
-        //       node.children.forEach(child => {
-        //         changeParent(child, node.parent);
-        //       })
-        //     }
-        //   } else {
-        //     if (node.parent === root)
-        //       node.changeSide();
-        //     else
-        //       changeParent(node, node.parent.parent);
-        //   }
-        // } else {
-        //   if (_dir > 0) {
-        //     if (node.children.length > 0) {
-        //       node.children.forEach(child => {
-        //         changeParent(child, node.parent);
-        //       })
-        //     }
-        //   } else {
-        //     if (node.parent === root)
-        //       node.changeSide();
-        //     else
-        //       changeParent(node, node.parent.parent);
-        //   }
-        // }
+        focusNode(findNodeByID(id));
     }
     function deleteNode() {
+        saveState();
         if (!focusedNode)
             return;
         if (focusedNode.parent === root)
@@ -379,6 +353,7 @@ var FreeMindViewer;
         createMindmap();
     }
     function createNewNode() {
+        saveState();
         let parent = focusedNode ? focusedNode : root;
         let newNode = document.createElement("node");
         if (parent === root)
@@ -437,6 +412,7 @@ var FreeMindViewer;
         }
     }
     function changeParent(_of, _to) {
+        saveState();
         if (_of.node.contains(_to.node))
             return;
         if (_to === root) {
@@ -450,11 +426,12 @@ var FreeMindViewer;
         _of.fillstyle = "blue";
         focusNode(_of);
         redrawWithoutChildren();
-        saveState();
+        // saveState();
     }
     function focusParent(_dir) {
         if (!focusedNode)
             return;
+        saveState();
         if (focusedNode === root) {
             root.children.forEach(el => {
                 if (el.mapPosition == (_dir > 0 ? "right" : "left"))
@@ -475,6 +452,7 @@ var FreeMindViewer;
     function focusSibling(_dir) {
         if (!focusedNode)
             return;
+        saveState();
         for (let i = 0; i < focusedNode.parent.children.length; i++) {
             if (focusedNode.parent.children[i] === focusedNode) {
                 if (_dir < 0) {
@@ -489,6 +467,7 @@ var FreeMindViewer;
         }
     }
     function focusNode(_node) {
+        saveState();
         if (focusedNode)
             focusedNode.fillstyle = "black";
         focusedNode = _node;
@@ -499,6 +478,7 @@ var FreeMindViewer;
     function createTextFieldOnNode() {
         if (!focusedNode)
             return;
+        saveState();
         let textField = document.createElement("input");
         textField.style.position = "fixed";
         if (focusedNode.mapPosition == "left")
