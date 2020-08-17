@@ -389,10 +389,8 @@ namespace FreeMindViewer {
 
     if (node.mapPosition == "left") {
       if (_dir < 0) {
-
         focusSibling(1);
         changeParent(node, focusedNode);
-
       } else {
         if (node.parent === root)
           node.changeSide();
@@ -411,6 +409,7 @@ namespace FreeMindViewer {
       }
     }
 
+    createMindmap();
     focusNode(findNodeByID(id));
   }
 
@@ -441,6 +440,7 @@ namespace FreeMindViewer {
 
     let newFMVNode: FMVNode = new FMVNode(parent, ctx, "new Node", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
     newFMVNode.node = newNode;
+    console.log(parent.mapPosition);
     newFMVNode.node.setAttribute("TEXT", "new Node");
     newFMVNode.node.setAttribute("POSITION", parent.mapPosition == "root" ? "left" : parent.mapPosition);
     newFMVNode.node.setAttribute("ID", createID());
@@ -449,8 +449,8 @@ namespace FreeMindViewer {
     parent.children.push(newFMVNode);
     fmvNodes.push(newFMVNode);
 
-    root.calculateVisibleChildren();
-    root.setPosition(0);
+    //root.calculateVisibleChildren();
+    //root.setPosition(0);
 
     createMindmap();
 
@@ -509,8 +509,12 @@ namespace FreeMindViewer {
       _of.changeSide();
       rootNode.appendChild(_of.node);
     }
-    else
+    else {
+      if (_of.node.getAttribute("POSITION") != _to.node.getAttribute("POSITION"))
+        _of.changeSide();
+
       _to.node.appendChild(_of.node);
+    }
 
     mindmapData = createXMLFile();
     createMindmap();
