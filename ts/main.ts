@@ -390,6 +390,8 @@ namespace FreeMindViewer {
     if (node.mapPosition == "left") {
       if (_dir < 0) {
         focusSibling(1);
+        if (node.mapPosition != focusedNode.mapPosition)
+          node.changeSide();
         changeParent(node, focusedNode);
       } else {
         if (node.parent === root)
@@ -409,6 +411,7 @@ namespace FreeMindViewer {
       }
     }
 
+    mindmapData = createXMLFile();
     createMindmap();
     focusNode(findNodeByID(id));
   }
@@ -424,6 +427,7 @@ namespace FreeMindViewer {
     else
       focusedNode.parent.node.removeChild(focusedNode.node);
 
+    mindmapData = createXMLFile();
     createMindmap();
   }
 
@@ -449,9 +453,7 @@ namespace FreeMindViewer {
     parent.children.push(newFMVNode);
     fmvNodes.push(newFMVNode);
 
-    //root.calculateVisibleChildren();
-    //root.setPosition(0);
-
+    mindmapData = createXMLFile();
     createMindmap();
 
     focusNode(findNodeByID(newFMVNode.node.getAttribute("ID")));
@@ -479,10 +481,11 @@ namespace FreeMindViewer {
           if (fmvNodes[i] != focusedNode && activeTextField == null) {
             changeParent(focusedNode, fmvNodes[i]);
 
-            if (fmvNodes[i] === root) {
+            /*if (fmvNodes[i] === root) {
               focusedNode.changeSide();
               root.setPosition(0);
-            }
+            }*/
+
             redrawWithoutChildren();
             return;
           }
@@ -510,8 +513,8 @@ namespace FreeMindViewer {
       rootNode.appendChild(_of.node);
     }
     else {
-      if (_of.node.getAttribute("POSITION") != _to.node.getAttribute("POSITION"))
-        _of.changeSide();
+      /*if (_of.node.getAttribute("POSITION") != _to.node.getAttribute("POSITION"))
+        _of.changeSide();*/
 
       _to.node.appendChild(_of.node);
     }
@@ -522,7 +525,6 @@ namespace FreeMindViewer {
     _of.fillstyle = "blue";
     focusNode(_of);
     redrawWithoutChildren();
-
     // saveState();
   }
 

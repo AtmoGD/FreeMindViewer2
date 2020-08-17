@@ -318,6 +318,8 @@ var FreeMindViewer;
         if (node.mapPosition == "left") {
             if (_dir < 0) {
                 focusSibling(1);
+                if (node.mapPosition != focusedNode.mapPosition)
+                    node.changeSide();
                 changeParent(node, focusedNode);
             }
             else {
@@ -339,6 +341,7 @@ var FreeMindViewer;
                 changeParent(node, focusedNode);
             }
         }
+        mindmapData = createXMLFile();
         createMindmap();
         focusNode(findNodeByID(id));
     }
@@ -350,6 +353,7 @@ var FreeMindViewer;
             rootNode.removeChild(focusedNode.node);
         else
             focusedNode.parent.node.removeChild(focusedNode.node);
+        mindmapData = createXMLFile();
         createMindmap();
     }
     function createNewNode() {
@@ -369,8 +373,7 @@ var FreeMindViewer;
         newFMVNode.parent = parent;
         parent.children.push(newFMVNode);
         fmvNodes.push(newFMVNode);
-        //root.calculateVisibleChildren();
-        //root.setPosition(0);
+        mindmapData = createXMLFile();
         createMindmap();
         focusNode(findNodeByID(newFMVNode.node.getAttribute("ID")));
         createTextFieldOnNode();
@@ -394,10 +397,10 @@ var FreeMindViewer;
                 if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
                     if (fmvNodes[i] != focusedNode && activeTextField == null) {
                         changeParent(focusedNode, fmvNodes[i]);
-                        if (fmvNodes[i] === root) {
-                            focusedNode.changeSide();
-                            root.setPosition(0);
-                        }
+                        /*if (fmvNodes[i] === root) {
+                          focusedNode.changeSide();
+                          root.setPosition(0);
+                        }*/
                         redrawWithoutChildren();
                         return;
                     }
@@ -421,8 +424,8 @@ var FreeMindViewer;
             rootNode.appendChild(_of.node);
         }
         else {
-            if (_of.node.getAttribute("POSITION") != _to.node.getAttribute("POSITION"))
-                _of.changeSide();
+            /*if (_of.node.getAttribute("POSITION") != _to.node.getAttribute("POSITION"))
+              _of.changeSide();*/
             _to.node.appendChild(_of.node);
         }
         mindmapData = createXMLFile();

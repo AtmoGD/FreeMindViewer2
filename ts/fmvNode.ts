@@ -42,7 +42,6 @@ namespace FreeMindViewer {
     public changeSide(): void {
       this.mapPosition = this.mapPosition == "left" ? "right" : "left";
       this.node.setAttribute("POSITION", this.mapPosition);
-
       if(this.children.length <= 0) return;
 
       this.children.forEach(child => {
