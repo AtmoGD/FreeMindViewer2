@@ -1,5 +1,9 @@
 # Freemind Viewer
 
+[Link zur App](https://aionixx.github.io/FreeMindViewer2/)
+
+**Zum starten muss man momentan noch das Repository local auf dem Rechner haben und einen Server mit `npx serve` starten**
+
 - Usage
   - call index.html
   - with get-parameters
