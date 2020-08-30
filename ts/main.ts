@@ -216,7 +216,7 @@ namespace FreeMindViewer {
   }
 
   function keyboardInput(_event: KeyboardEvent): void {
-    // console.log(_event);
+    //console.log(_event);
 
     switch (_event.code) {
       case "Space":
@@ -276,11 +276,21 @@ namespace FreeMindViewer {
       case "Enter":
         if (activeTextField)
           activeTextField.blur();
-        else
+        else {
+          if (focusedNode && focusedNode != root) {
+            focusNode(focusedNode.parent);
+          }
           createNewNode();
+        }
         break;
       case "Delete":
         deleteNode();
+        break;
+      case "Insert":
+        if (activeTextField)
+          activeTextField.blur();
+        else
+          createNewNode();
         break;
       case "Escape":
         if (activeTextField) {
@@ -422,6 +432,15 @@ namespace FreeMindViewer {
     if (!focusedNode)
       return;
 
+    let fallBackNode: string = focusedNode.parent.node.getAttribute("ID");
+    if (focusedNode.parent.children.length > 1) {
+      for (let i = 0; i < focusedNode.node.parentNode.children.length; i++) {
+        if (focusedNode.node.parentNode.children[i] != focusedNode.node) {
+          fallBackNode = focusedNode.node.parentNode.children[i].getAttribute("ID");
+        }
+      }
+    }
+
     if (focusedNode.parent === root)
       rootNode.removeChild(focusedNode.node);
     else
@@ -429,6 +448,7 @@ namespace FreeMindViewer {
 
     mindmapData = createXMLFile();
     createMindmap();
+    focusNode(findNodeByID(fallBackNode));
   }
 
   function createNewNode(): void {
@@ -465,6 +485,7 @@ namespace FreeMindViewer {
       if (fmvNodes[i].pfadrect) {
         if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
           focusNode(fmvNodes[i]);
+          document.body.style.cursor = "no-drop";
           return;
         }
       }
@@ -473,19 +494,20 @@ namespace FreeMindViewer {
   }
 
   function onMouseUp(_event: MouseEvent): void {
+    document.body.style.cursor = "auto";
     if (!focusedNode) return;
 
+    let id: string = focusedNode.node.getAttribute("ID");
     for (let i: number = 0; i < fmvNodes.length; i++) {
       if (fmvNodes[i].pfadrect) {
         if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
           if (fmvNodes[i] != focusedNode && activeTextField == null) {
             changeParent(focusedNode, fmvNodes[i]);
 
-            /*if (fmvNodes[i] === root) {
-              focusedNode.changeSide();
-              root.setPosition(0);
-            }*/
+            mindmapData = createXMLFile();
+            createMindmap();
 
+            focusNode(findNodeByID(id));
             redrawWithoutChildren();
             return;
           }
@@ -495,10 +517,24 @@ namespace FreeMindViewer {
   }
 
   function onPointerMove(_event: MouseEvent): void {
-    if (_event.buttons == 1 && focusedNode == null) {
-      rootNodeY += _event.movementY;
-      rootNodeX += _event.movementX;
-      redrawWithoutChildren();
+    if (_event.buttons == 1) {
+      if (focusedNode == null) {
+        rootNodeY += _event.movementY;
+        rootNodeX += _event.movementX;
+        redrawWithoutChildren();
+      } else {
+        for (let i: number = 0; i < fmvNodes.length; i++) {
+          if (fmvNodes[i].pfadrect) {
+            if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
+              if (fmvNodes[i] != focusedNode && activeTextField == null) {
+                document.body.style.cursor = "alias";
+                return;
+              }
+            }
+          }
+        }
+        document.body.style.cursor = "no-drop";
+      }
     }
   }
 
@@ -513,10 +549,11 @@ namespace FreeMindViewer {
       rootNode.appendChild(_of.node);
     }
     else {
-      /*if (_of.node.getAttribute("POSITION") != _to.node.getAttribute("POSITION"))
-        _of.changeSide();*/
-
       _to.node.appendChild(_of.node);
+
+      if (_of.node.getAttribute("POSITION") != _to.node.getAttribute("POSITION"))
+        _of.changeSide();
+
     }
 
     mindmapData = createXMLFile();
@@ -576,12 +613,12 @@ namespace FreeMindViewer {
     saveState();
 
     if (focusedNode)
-      focusedNode.fillstyle = "black";
+      focusedNode.fillstyle = "RGBA(10,10,10,0)";
 
     focusedNode = _node;
 
     if (focusedNode)
-      focusedNode.fillstyle = "blue";
+      focusedNode.fillstyle = "RGBA(10,10,10,0.2)";
 
     redrawWithoutChildren();
   }
@@ -603,6 +640,7 @@ namespace FreeMindViewer {
     textField.style.top = focusedNode.posY - (focusedNode.childHight / 2) + "px";
     textField.style.zIndex = "5";
     document.querySelector("#canvasContainer").appendChild(textField);
+    textField.value = focusedNode.content;
     textField.focus();
 
     activeTextField = textField;

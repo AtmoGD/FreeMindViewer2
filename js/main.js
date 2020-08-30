@@ -170,7 +170,7 @@ var FreeMindViewer;
         root.drawFMVNode();
     }
     function keyboardInput(_event) {
-        // console.log(_event);
+        //console.log(_event);
         switch (_event.code) {
             case "Space":
                 if (_event.ctrlKey) {
@@ -227,11 +227,21 @@ var FreeMindViewer;
             case "Enter":
                 if (activeTextField)
                     activeTextField.blur();
-                else
+                else {
+                    if (focusedNode && focusedNode != root) {
+                        focusNode(focusedNode.parent);
+                    }
                     createNewNode();
+                }
                 break;
             case "Delete":
                 deleteNode();
+                break;
+            case "Insert":
+                if (activeTextField)
+                    activeTextField.blur();
+                else
+                    createNewNode();
                 break;
             case "Escape":
                 if (activeTextField) {
@@ -349,12 +359,21 @@ var FreeMindViewer;
         saveState();
         if (!focusedNode)
             return;
+        let fallBackNode = focusedNode.parent.node.getAttribute("ID");
+        if (focusedNode.parent.children.length > 1) {
+            for (let i = 0; i < focusedNode.node.parentNode.children.length; i++) {
+                if (focusedNode.node.parentNode.children[i] != focusedNode.node) {
+                    fallBackNode = focusedNode.node.parentNode.children[i].getAttribute("ID");
+                }
+            }
+        }
         if (focusedNode.parent === root)
             rootNode.removeChild(focusedNode.node);
         else
             focusedNode.parent.node.removeChild(focusedNode.node);
         mindmapData = createXMLFile();
         createMindmap();
+        focusNode(findNodeByID(fallBackNode));
     }
     function createNewNode() {
         saveState();
@@ -383,6 +402,7 @@ var FreeMindViewer;
             if (fmvNodes[i].pfadrect) {
                 if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
                     focusNode(fmvNodes[i]);
+                    document.body.style.cursor = "no-drop";
                     return;
                 }
             }
@@ -390,17 +410,18 @@ var FreeMindViewer;
         focusNode(null);
     }
     function onMouseUp(_event) {
+        document.body.style.cursor = "auto";
         if (!focusedNode)
             return;
+        let id = focusedNode.node.getAttribute("ID");
         for (let i = 0; i < fmvNodes.length; i++) {
             if (fmvNodes[i].pfadrect) {
                 if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
                     if (fmvNodes[i] != focusedNode && activeTextField == null) {
                         changeParent(focusedNode, fmvNodes[i]);
-                        /*if (fmvNodes[i] === root) {
-                          focusedNode.changeSide();
-                          root.setPosition(0);
-                        }*/
+                        mindmapData = createXMLFile();
+                        createMindmap();
+                        focusNode(findNodeByID(id));
                         redrawWithoutChildren();
                         return;
                     }
@@ -409,10 +430,25 @@ var FreeMindViewer;
         }
     }
     function onPointerMove(_event) {
-        if (_event.buttons == 1 && focusedNode == null) {
-            FreeMindViewer.rootNodeY += _event.movementY;
-            FreeMindViewer.rootNodeX += _event.movementX;
-            redrawWithoutChildren();
+        if (_event.buttons == 1) {
+            if (focusedNode == null) {
+                FreeMindViewer.rootNodeY += _event.movementY;
+                FreeMindViewer.rootNodeX += _event.movementX;
+                redrawWithoutChildren();
+            }
+            else {
+                for (let i = 0; i < fmvNodes.length; i++) {
+                    if (fmvNodes[i].pfadrect) {
+                        if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
+                            if (fmvNodes[i] != focusedNode && activeTextField == null) {
+                                document.body.style.cursor = "alias";
+                                return;
+                            }
+                        }
+                    }
+                }
+                document.body.style.cursor = "no-drop";
+            }
         }
     }
     function changeParent(_of, _to) {
@@ -424,9 +460,9 @@ var FreeMindViewer;
             rootNode.appendChild(_of.node);
         }
         else {
-            /*if (_of.node.getAttribute("POSITION") != _to.node.getAttribute("POSITION"))
-              _of.changeSide();*/
             _to.node.appendChild(_of.node);
+            if (_of.node.getAttribute("POSITION") != _to.node.getAttribute("POSITION"))
+                _of.changeSide();
         }
         mindmapData = createXMLFile();
         createMindmap();
@@ -476,10 +512,10 @@ var FreeMindViewer;
     function focusNode(_node) {
         saveState();
         if (focusedNode)
-            focusedNode.fillstyle = "black";
+            focusedNode.fillstyle = "RGBA(10,10,10,0)";
         focusedNode = _node;
         if (focusedNode)
-            focusedNode.fillstyle = "blue";
+            focusedNode.fillstyle = "RGBA(10,10,10,0.2)";
         redrawWithoutChildren();
     }
     function createTextFieldOnNode() {
@@ -495,6 +531,7 @@ var FreeMindViewer;
         textField.style.top = focusedNode.posY - (focusedNode.childHight / 2) + "px";
         textField.style.zIndex = "5";
         document.querySelector("#canvasContainer").appendChild(textField);
+        textField.value = focusedNode.content;
         textField.focus();
         activeTextField = textField;
         let node = focusedNode;
