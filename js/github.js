@@ -50,11 +50,11 @@ var FreeMindViewer;
         return __awaiter(this, void 0, void 0, function* () {
             let owner = (_a = document.querySelector("#ownerInput")) === null || _a === void 0 ? void 0 : _a.value;
             let repo = (_b = document.querySelector("#repoInput")) === null || _b === void 0 ? void 0 : _b.value;
-            let path = (_c = document.querySelector("#pathInput")) === null || _c === void 0 ? void 0 : _c.value;
+            let repoPath = (_c = document.querySelector("#pathInput")) === null || _c === void 0 ? void 0 : _c.value;
             let branch = (_d = document.querySelector("#branchInput")) === null || _d === void 0 ? void 0 : _d.value;
-            if (owner == "" || repo == "" || path == "" || branch == "")
+            if (owner == "" || repo == "" || repoPath == "" || branch == "")
                 return;
-            let url = path + "?a=saveFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
+            let url = FreeMindViewer.path + "?a=saveFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + repoPath + "&branch=" + branch;
             let response = yield fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain" },
