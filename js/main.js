@@ -403,9 +403,10 @@ var FreeMindViewer;
             if (fmvNodes[i].pfadrect) {
                 if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
                     focusNode(fmvNodes[i]);
-                    if (focusedNode) {
-                        currentLevel = getLevel(focusedNode);
-                        document.body.style.cursor = "no-drop";
+                    console.log(fmvNodes[i].content);
+                    document.body.style.cursor = "no-drop";
+                    if (focusedNode != null) {
+                        //currentLevel = getLevel(focusedNode);
                     }
                     return;
                 }
@@ -495,7 +496,7 @@ var FreeMindViewer;
             if (focusedNode.children.length > 0)
                 focusNode(focusedNode.children[0]);
         }
-        currentLevel = getLevel(focusedNode);
+        //currentLevel = getLevel(focusedNode);
     }
     function focusSibling(_dir) {
         if (!focusedNode)
@@ -515,6 +516,7 @@ var FreeMindViewer;
         }
     }
     function getLevel(_node) {
+        //if (_node == null) { return null; }
         return _node.parent === root ? 1 : getLevel(_node.parent) + 1;
     }
     function findCousin(_dir) {
@@ -582,9 +584,9 @@ var FreeMindViewer;
     }
     function focusNode(_node) {
         saveState();
-        if (_node && _node.parent.node.getAttribute("FOLDED") == "true") {
-            return;
-        }
+        /*if (_node && _node.parent && _node !== root) {
+          if (_node.parent.node.getAttribute("FOLDED") == "true") { return; }
+        }*/
         if (focusedNode)
             focusedNode.fillstyle = "RGBA(10,10,10,0)";
         focusedNode = _node;

@@ -486,10 +486,11 @@ namespace FreeMindViewer {
       if (fmvNodes[i].pfadrect) {
         if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
           focusNode(fmvNodes[i]);
+          console.log(fmvNodes[i].content)
+          document.body.style.cursor = "no-drop";
 
-          if (focusedNode) {
-            currentLevel = getLevel(focusedNode);
-            document.body.style.cursor = "no-drop";
+          if (focusedNode != null) {
+            //currentLevel = getLevel(focusedNode);
           }
           return;
         }
@@ -594,7 +595,7 @@ namespace FreeMindViewer {
         focusNode(focusedNode.children[0]);
     }
 
-    currentLevel = getLevel(focusedNode);
+    //currentLevel = getLevel(focusedNode);
   }
 
   function focusSibling(_dir: number): void {
@@ -617,6 +618,7 @@ namespace FreeMindViewer {
   }
 
   function getLevel(_node: FMVNode): number {
+    //if (_node == null) { return null; }
     return _node.parent === root ? 1 : getLevel(_node.parent) + 1;
   }
 
@@ -686,7 +688,9 @@ namespace FreeMindViewer {
   function focusNode(_node: FMVNode): void {
     saveState();
 
-    if (_node && _node.parent.node.getAttribute("FOLDED") == "true") { return; }
+    /*if (_node && _node.parent && _node !== root) {
+      if (_node.parent.node.getAttribute("FOLDED") == "true") { return; }
+    }*/
 
     if (focusedNode)
       focusedNode.fillstyle = "RGBA(10,10,10,0)";
