@@ -50,8 +50,6 @@ namespace FreeMindViewer {
       body: btoa(_file)
     });
     alert(await response.text());
-
-
   }
 
   export async function fetchFile(): Promise<void> {

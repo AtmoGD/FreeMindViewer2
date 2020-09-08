@@ -391,7 +391,6 @@ var FreeMindViewer;
             parent.node.appendChild(newNode);
         let newFMVNode = new FreeMindViewer.FMVNode(parent, ctx, "new Node", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
         newFMVNode.node = newNode;
-        console.log(parent.mapPosition);
         newFMVNode.node.setAttribute("TEXT", "new Node");
         newFMVNode.node.setAttribute("POSITION", parent.mapPosition == "root" ? "left" : parent.mapPosition);
         newFMVNode.node.setAttribute("ID", createID());
