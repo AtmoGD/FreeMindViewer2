@@ -21,6 +21,7 @@ var FreeMindViewer;
     let root;
     let fmvNodes;
     let allFolded = false;
+    let currentLevel = 0;
     let activeTextField = null;
     function init() {
         fmvNodes = [];
@@ -402,7 +403,10 @@ var FreeMindViewer;
             if (fmvNodes[i].pfadrect) {
                 if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
                     focusNode(fmvNodes[i]);
-                    document.body.style.cursor = "no-drop";
+                    if (focusedNode) {
+                        currentLevel = getLevel(focusedNode);
+                        document.body.style.cursor = "no-drop";
+                    }
                     return;
                 }
             }
@@ -491,6 +495,7 @@ var FreeMindViewer;
             if (focusedNode.children.length > 0)
                 focusNode(focusedNode.children[0]);
         }
+        currentLevel = getLevel(focusedNode);
     }
     function focusSibling(_dir) {
         if (!focusedNode)
@@ -498,24 +503,94 @@ var FreeMindViewer;
         saveState();
         for (let i = 0; i < focusedNode.parent.children.length; i++) {
             if (focusedNode.parent.children[i] === focusedNode) {
-                if (_dir < 0) {
-                    focusNode(focusedNode.parent.children[(i == 0 ? focusedNode.parent.children.length - 1 : i - 1)]);
+                if ((i == 0 && _dir < 0) || (i == focusedNode.parent.children.length - 1 && _dir > 0)) {
+                    findCousin(_dir);
                     return;
                 }
                 else {
-                    focusNode(focusedNode.parent.children[(i == focusedNode.parent.children.length - 1 ? 0 : i + 1)]);
+                    focusNode(focusedNode.parent.children[(_dir < 0 ? i - 1 : i + 1)]);
                     return;
+                }
+            }
+        }
+    }
+    function getLevel(_node) {
+        return _node.parent === root ? 1 : getLevel(_node.parent) + 1;
+    }
+    function findCousin(_dir) {
+        let branchFound = false;
+        let node = focusedNode.parent;
+        let nodeBevore = focusedNode;
+        //If dont have cousins -> return null
+        if (node === root || node.parent === root) {
+            return null;
+        }
+        //find cousin
+        while (!branchFound) {
+            if (node.parent.children.length > 1) {
+                for (let i = 0; i < node.parent.children.length; i++) {
+                    if (node.parent.children[i] === node) {
+                        if ((i == 0 && _dir < 0) || (i == node.children.length - 1 && _dir > 0)) {
+                            nodeBevore = node;
+                            node = node.parent;
+                        }
+                        else {
+                            nodeBevore = node;
+                            node = node.parent;
+                            branchFound = true;
+                        }
+                    }
+                }
+            }
+            else if (node.parent === root) {
+                return null;
+            }
+            else {
+                nodeBevore = node;
+                node = node.parent;
+            }
+        }
+        //check if cousin has siblings in the right direction -> save the sibling -> if not -> return null
+        let sibling = null;
+        for (let i = 0; i < node.children.length; i++) {
+            if (node.children[i] === nodeBevore) {
+                //if ((i == 0 && _dir < 0) || (i == node.children.length - 1 && _dir > 0)) { return null; }
+                sibling = node.children[i + _dir];
+            }
+        }
+        if (sibling == null) {
+            return null;
+        }
+        //find node on same level -> if not focus deepest child
+        let levelFound = false;
+        let currentNode = sibling;
+        while (!levelFound) {
+            if (getLevel(currentNode) == currentLevel) {
+                focusNode(currentNode);
+                levelFound = true;
+            }
+            else {
+                if (currentNode.children.length > 0) {
+                    currentNode = currentNode.children[_dir < 0 ? currentNode.children.length - 1 : 0];
+                }
+                else {
+                    levelFound = true;
+                    focusNode(currentNode);
                 }
             }
         }
     }
     function focusNode(_node) {
         saveState();
+        if (_node && _node.parent.node.getAttribute("FOLDED") == "true") {
+            return;
+        }
         if (focusedNode)
             focusedNode.fillstyle = "RGBA(10,10,10,0)";
         focusedNode = _node;
-        if (focusedNode)
+        if (focusedNode) {
             focusedNode.fillstyle = "RGBA(10,10,10,0.2)";
+        }
         redrawWithoutChildren();
     }
     function createTextFieldOnNode() {

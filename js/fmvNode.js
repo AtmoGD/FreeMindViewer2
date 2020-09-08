@@ -20,6 +20,7 @@ var FreeMindViewer;
         changeSide() {
             this.mapPosition = this.mapPosition == "left" ? "right" : "left";
             this.node.setAttribute("POSITION", this.mapPosition);
+            this.node.setAttribute("FOLDED", this.folded ? "true" : "false");
             if (this.children.length <= 0)
                 return;
             this.children.forEach(child => {
