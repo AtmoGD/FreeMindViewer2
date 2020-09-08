@@ -64,9 +64,7 @@ namespace FreeMindViewer {
     let url: string = path + "?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + repoPath + "&branch=" + branch;
 
     let res = await fetch(url);
-    console.log(res);
     let text = await res.text();
-    console.log(text);
     fetchXML(text);
   }
 

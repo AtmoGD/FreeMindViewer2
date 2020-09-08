@@ -86,13 +86,12 @@ namespace FreeMindViewer {
 
   export async function fetchXML(_path?: string): Promise<void> {
     let response: Response | null = null;
-    console.log(_path);
+
     if (_path == "" || !_path)
       response = await fetch(params.path + "/" + params.map);
     else
       response = await fetch(_path);
 
-    //const xmlText: string = _path ? _path : await response.text();
     const xmlText: string = await response.text();
     mindmapData = StringToXML(xmlText); // Save xml in letiable
 
