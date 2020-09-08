@@ -80,14 +80,19 @@ namespace FreeMindViewer {
         child.changeSide();
       })
     }
+    console.log("end load data");
   }
 
   export async function fetchXML(_path?: string): Promise<void> {
     let response: Response | null = null;
+    console.log(_path);
     if (_path == "" || !_path)
       response = await fetch(params.path + "/" + params.map);
+    else
+      response = await fetch(_path);
 
-    const xmlText: string = _path ? _path : await response.text();
+    //const xmlText: string = _path ? _path : await response.text();
+    const xmlText: string = await response.text();
     mindmapData = StringToXML(xmlText); // Save xml in letiable
 
     loadData();
@@ -130,11 +135,9 @@ namespace FreeMindViewer {
   }
 
   function createMindmap(): void {
-
     clearMap();
     mindmapData = createXMLFile();
     fmvNodes.length = 0;
-
     // create root FMVNode
     root = new FMVRootNode(
       ctx,
@@ -486,11 +489,10 @@ namespace FreeMindViewer {
       if (fmvNodes[i].pfadrect) {
         if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
           focusNode(fmvNodes[i]);
-          console.log(fmvNodes[i].content)
           document.body.style.cursor = "no-drop";
 
-          if (focusedNode != null) {
-            //currentLevel = getLevel(focusedNode);
+          if (focusedNode !== root) {
+            currentLevel = getLevel(focusedNode);
           }
           return;
         }
@@ -595,7 +597,8 @@ namespace FreeMindViewer {
         focusNode(focusedNode.children[0]);
     }
 
-    //currentLevel = getLevel(focusedNode);
+    if (focusedNode !== root)
+      currentLevel = getLevel(focusedNode);
   }
 
   function focusSibling(_dir: number): void {
@@ -688,9 +691,9 @@ namespace FreeMindViewer {
   function focusNode(_node: FMVNode): void {
     saveState();
 
-    /*if (_node && _node.parent && _node !== root) {
+    if (_node && _node.parent && _node !== root) {
       if (_node.parent.node.getAttribute("FOLDED") == "true") { return; }
-    }*/
+    }
 
     if (focusedNode)
       focusedNode.fillstyle = "RGBA(10,10,10,0)";

@@ -65,14 +65,19 @@ var FreeMindViewer;
                     child.changeSide();
                 });
             }
+            console.log("end load data");
         });
     }
     function fetchXML(_path) {
         return __awaiter(this, void 0, void 0, function* () {
             let response = null;
+            console.log(_path);
             if (_path == "" || !_path)
                 response = yield fetch(params.path + "/" + params.map);
-            const xmlText = _path ? _path : yield response.text();
+            else
+                response = yield fetch(_path);
+            //const xmlText: string = _path ? _path : await response.text();
+            const xmlText = yield response.text();
             mindmapData = StringToXML(xmlText); // Save xml in letiable
             loadData();
             saveState();
@@ -403,10 +408,9 @@ var FreeMindViewer;
             if (fmvNodes[i].pfadrect) {
                 if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
                     focusNode(fmvNodes[i]);
-                    console.log(fmvNodes[i].content);
                     document.body.style.cursor = "no-drop";
-                    if (focusedNode != null) {
-                        //currentLevel = getLevel(focusedNode);
+                    if (focusedNode !== root) {
+                        currentLevel = getLevel(focusedNode);
                     }
                     return;
                 }
@@ -496,7 +500,8 @@ var FreeMindViewer;
             if (focusedNode.children.length > 0)
                 focusNode(focusedNode.children[0]);
         }
-        //currentLevel = getLevel(focusedNode);
+        if (focusedNode !== root)
+            currentLevel = getLevel(focusedNode);
     }
     function focusSibling(_dir) {
         if (!focusedNode)
@@ -584,9 +589,11 @@ var FreeMindViewer;
     }
     function focusNode(_node) {
         saveState();
-        /*if (_node && _node.parent && _node !== root) {
-          if (_node.parent.node.getAttribute("FOLDED") == "true") { return; }
-        }*/
+        if (_node && _node.parent && _node !== root) {
+            if (_node.parent.node.getAttribute("FOLDED") == "true") {
+                return;
+            }
+        }
         if (focusedNode)
             focusedNode.fillstyle = "RGBA(10,10,10,0)";
         focusedNode = _node;
