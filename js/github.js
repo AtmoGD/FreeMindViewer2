@@ -60,7 +60,7 @@ var FreeMindViewer;
                 headers: { "Content-Type": "text/plain" },
                 body: btoa(_file)
             });
-            console.log(yield response.text());
+            alert(yield response.text());
         });
     }
     FreeMindViewer.saveFile = saveFile;

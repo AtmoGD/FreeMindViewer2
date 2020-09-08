@@ -49,7 +49,9 @@ namespace FreeMindViewer {
       headers: { "Content-Type": "text/plain" },
       body: btoa(_file)
     });
-    console.log(await response.text());
+    alert(await response.text());
+
+
   }
 
   export async function fetchFile(): Promise<void> {
