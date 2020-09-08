@@ -11,4 +11,4 @@
 <node CREATED="1486379054638" ID="ID_492338000" MODIFIED="1486379098336" TEXT="shows map &quot;README&quot; in mm folder as mindmap" POSITION="right" FOLDED="false"/>
 </node>
 </node>
-<node xmlns="http://www.w3.org/1999/xhtml" TEXT="new Nodeenter" POSITION="left" ID="ID_249612412"></node><node xmlns="http://www.w3.org/1999/xhtml" TEXT="new" POSITION="left" ID="ID_401323867"></node><node xmlns="http://www.w3.org/1999/xhtml" TEXT="new Nodehaaallloo" POSITION="left" ID="ID_973481026"></node></node></node>
+</node></node>
