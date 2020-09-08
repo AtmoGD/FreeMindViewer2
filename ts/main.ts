@@ -58,6 +58,8 @@ namespace FreeMindViewer {
   }
 
   function uploadFile(): void {
+    mindmapData = createXMLFile();
+    createMindmap();
     saveFile(XMLToString(mindmapData));
   }
 

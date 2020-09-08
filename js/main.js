@@ -44,6 +44,8 @@ var FreeMindViewer;
         document.querySelector("#saveFileButton").addEventListener("click", uploadFile);
     }
     function uploadFile() {
+        mindmapData = createXMLFile();
+        createMindmap();
         FreeMindViewer.saveFile(XMLToString(mindmapData));
     }
     function XMLToString(_data) {
