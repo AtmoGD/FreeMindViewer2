@@ -10,5 +10,5 @@
 <node CREATED="1486379054638" ID="ID_492338000" MODIFIED="1486379098336" TEXT="..../index.html?path=.&amp;map=README.mm&amp;list=false" POSITION="right" FOLDED="false"/>
 <node CREATED="1486379054638" ID="ID_492338000" MODIFIED="1486379098336" TEXT="shows map &quot;README&quot; in mm folder as mindmap" POSITION="right" FOLDED="false"/>
 </node>
-<node xmlns="http://www.w3.org/1999/xhtml" TEXT="new NodeHello Agian" POSITION="right" ID="ID_300256136" FOLDED="true"></node></node>
+<node xmlns="http://www.w3.org/1999/xhtml" TEXT="new NodeHello Agian" POSITION="right" ID="ID_300256136" FOLDED="true"></node><node xmlns="http://www.w3.org/1999/xhtml" TEXT="new NodeAnother try" POSITION="right" ID="ID_378488087" FOLDED="true"></node></node>
 </node></node>
