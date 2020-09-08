@@ -67,7 +67,6 @@ var FreeMindViewer;
                     child.changeSide();
                 });
             }
-            console.log("end load data");
         });
     }
     function fetchXML(_path) {

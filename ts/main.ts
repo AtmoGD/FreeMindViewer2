@@ -82,7 +82,6 @@ namespace FreeMindViewer {
         child.changeSide();
       })
     }
-    console.log("end load data");
   }
 
   export async function fetchXML(_path?: string): Promise<void> {
