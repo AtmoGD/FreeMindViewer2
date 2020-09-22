@@ -464,6 +464,7 @@ var FreeMindViewer;
             if (_of.node.getAttribute("POSITION") != _to.node.getAttribute("POSITION"))
                 _of.changeSide();
         }
+        foldNode(_to, true, true);
         mindmapData = createXMLFile();
         createMindmap();
         _of.fillstyle = "blue";

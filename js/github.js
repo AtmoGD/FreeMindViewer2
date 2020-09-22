@@ -20,7 +20,7 @@ var FreeMindViewer;
     }
     FreeMindViewer.authorize = authorize;
     function logout() {
-        FreeMindViewer.loginSpan.innerText = "";
+        FreeMindViewer.loginSpan.innerText = "Niemand";
         deleteCookie("at");
         FreeMindViewer.loginButton.innerText = "Login to Github";
     }

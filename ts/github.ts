@@ -12,7 +12,7 @@ namespace FreeMindViewer {
   }
 
   export function logout(): void {
-    loginSpan.innerText = "";
+    loginSpan.innerText = "Niemand";
     deleteCookie("at");
     loginButton.innerText = "Login to Github";
   }
