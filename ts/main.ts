@@ -562,7 +562,7 @@ namespace FreeMindViewer {
         _of.changeSide();
 
     }
-    foldNode(_to, true, true);
+    foldNode(_of, true, true);
     
     mindmapData = createXMLFile();
     createMindmap();
