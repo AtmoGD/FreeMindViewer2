@@ -694,10 +694,11 @@ namespace FreeMindViewer {
 
     if (_node && _node.parent && _node !== root) {
       if (_node.parent.node.getAttribute("FOLDED") == "true") {
+        let id: string = _node.node.getAttribute("ID");
         foldNode(_node.parent, true, false);
         mindmapData = createXMLFile();
         createMindmap();
-        focusNode(_node);
+        focusNode(findNodeByID(id));
       }
     }
 
