@@ -36,36 +36,36 @@ namespace FreeMindViewer {
   export async function saveFile(_file: string): Promise<void> {
     let owner: string = (<HTMLInputElement>document.querySelector("#ownerInput"))?.value;
     let repo: string = (<HTMLInputElement>document.querySelector("#repoInput"))?.value;
-    let path: string = (<HTMLInputElement>document.querySelector("#pathInput"))?.value;
+    let repoPath: string = (<HTMLInputElement>document.querySelector("#pathInput"))?.value;
     let branch: string = (<HTMLInputElement>document.querySelector("#branchInput"))?.value;
 
-    if (owner == "" || repo == "" || path == "" || branch == "")
+    if (owner == "" || repo == "" || repoPath == "" || branch == "")
       return;
 
-    let url: string = path + "?a=saveFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
+    let url: string = path + "?a=saveFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + repoPath + "&branch=" + branch;
 
     let response: Response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "text/plain" },
       body: btoa(_file)
     });
-    console.log(await response.text());
+    alert(await response.text());
   }
 
   export async function fetchFile(): Promise<void> {
     let owner: string = (<HTMLInputElement>document.querySelector("#ownerInput"))?.value;
     let repo: string = (<HTMLInputElement>document.querySelector("#repoInput"))?.value;
-    let path: string = (<HTMLInputElement>document.querySelector("#pathInput"))?.value;
+    let repoPath: string = (<HTMLInputElement>document.querySelector("#pathInput"))?.value;
     let branch: string = (<HTMLInputElement>document.querySelector("#branchInput"))?.value;
 
-    if (owner == "" || repo == "" || path == "" || branch == "")
+    if (owner == "" || repo == "" || repoPath == "" || branch == "")
       return;
 
-    let url: string = path + "?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + path + "&branch=" + branch;
+    let url: string = path + "?a=getFile&at=" + getCookie("at") + "&owner=" + owner + "&name=" + repo + "&path=" + repoPath + "&branch=" + branch;
 
     let res = await fetch(url);
-    console.log(res);
-    fetchXML(await res.text());
+    let text = await res.text();
+    fetchXML(text);
   }
 
   export async function fetchUsername(): Promise<string> {

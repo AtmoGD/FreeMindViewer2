@@ -27,6 +27,7 @@ namespace FreeMindViewer {
   let root: FMVRootNode;
   let fmvNodes: FMVNode[];
   let allFolded: boolean = false;
+  let currentLevel: number = 0;
 
   let activeTextField: HTMLInputElement = null;
 
@@ -57,6 +58,8 @@ namespace FreeMindViewer {
   }
 
   function uploadFile(): void {
+    mindmapData = createXMLFile();
+    createMindmap();
     saveFile(XMLToString(mindmapData));
   }
 
@@ -83,10 +86,13 @@ namespace FreeMindViewer {
 
   export async function fetchXML(_path?: string): Promise<void> {
     let response: Response | null = null;
+
     if (_path == "" || !_path)
       response = await fetch(params.path + "/" + params.map);
+    else
+      response = await fetch(_path);
 
-    const xmlText: string = _path ? _path : await response.text();
+    const xmlText: string = await response.text();
     mindmapData = StringToXML(xmlText); // Save xml in letiable
 
     loadData();
@@ -129,11 +135,9 @@ namespace FreeMindViewer {
   }
 
   function createMindmap(): void {
-
     clearMap();
     mindmapData = createXMLFile();
     fmvNodes.length = 0;
-
     // create root FMVNode
     root = new FMVRootNode(
       ctx,
@@ -464,7 +468,6 @@ namespace FreeMindViewer {
 
     let newFMVNode: FMVNode = new FMVNode(parent, ctx, "new Node", parent.mapPosition == "root" ? "left" : parent.mapPosition, false);
     newFMVNode.node = newNode;
-    console.log(parent.mapPosition);
     newFMVNode.node.setAttribute("TEXT", "new Node");
     newFMVNode.node.setAttribute("POSITION", parent.mapPosition == "root" ? "left" : parent.mapPosition);
     newFMVNode.node.setAttribute("ID", createID());
@@ -486,6 +489,10 @@ namespace FreeMindViewer {
         if (ctx.isPointInPath(fmvNodes[i].pfadrect, _event.clientX, _event.clientY)) {
           focusNode(fmvNodes[i]);
           document.body.style.cursor = "no-drop";
+
+          if (focusedNode !== root) {
+            currentLevel = getLevel(focusedNode);
+          }
           return;
         }
       }
@@ -589,6 +596,9 @@ namespace FreeMindViewer {
       if (focusedNode.children.length > 0)
         focusNode(focusedNode.children[0]);
     }
+
+    if (focusedNode !== root)
+      currentLevel = getLevel(focusedNode);
   }
 
   function focusSibling(_dir: number): void {
@@ -599,12 +609,80 @@ namespace FreeMindViewer {
 
     for (let i: number = 0; i < focusedNode.parent.children.length; i++) {
       if (focusedNode.parent.children[i] === focusedNode) {
-        if (_dir < 0) {
-          focusNode(focusedNode.parent.children[(i == 0 ? focusedNode.parent.children.length - 1 : i - 1)]);
+        if ((i == 0 && _dir < 0) || (i == focusedNode.parent.children.length - 1 && _dir > 0)) {
+          findCousin(_dir);
           return;
         } else {
-          focusNode(focusedNode.parent.children[(i == focusedNode.parent.children.length - 1 ? 0 : i + 1)]);
+          focusNode(focusedNode.parent.children[(_dir < 0 ? i - 1 : i + 1)]);
           return;
+        }
+      }
+    }
+  }
+
+  function getLevel(_node: FMVNode): number {
+    //if (_node == null) { return null; }
+    return _node.parent === root ? 1 : getLevel(_node.parent) + 1;
+  }
+
+  function findCousin(_dir: number): FMVNode | null {
+    let branchFound: boolean = false;
+    let node: FMVNode = focusedNode.parent;
+    let nodeBevore: FMVNode = focusedNode;
+
+    //If dont have cousins -> return null
+    if (node === root || node.parent === root) { return null; }
+
+    //find cousin
+    while (!branchFound) {
+      if (node.parent.children.length > 1) {
+        for (let i: number = 0; i < node.parent.children.length; i++) {
+          if (node.parent.children[i] === node) {
+            if ((i == 0 && _dir < 0) || (i == node.children.length - 1 && _dir > 0)) {
+              nodeBevore = node;
+              node = node.parent;
+            }
+            else {
+              nodeBevore = node;
+              node = node.parent;
+              branchFound = true;
+            }
+          }
+        }
+
+      } else if (node.parent === root) {
+        return null;
+      } else {
+        nodeBevore = node;
+        node = node.parent;
+      }
+    }
+
+    //check if cousin has siblings in the right direction -> save the sibling -> if not -> return null
+    let sibling: FMVNode = null;
+    for (let i: number = 0; i < node.children.length; i++) {
+      if (node.children[i] === nodeBevore) {
+        //if ((i == 0 && _dir < 0) || (i == node.children.length - 1 && _dir > 0)) { return null; }
+        sibling = node.children[i + _dir]
+      }
+    }
+
+    if (sibling == null) { return null; }
+
+    //find node on same level -> if not focus deepest child
+    let levelFound: boolean = false;
+    let currentNode: FMVNode = sibling;
+
+    while (!levelFound) {
+      if (getLevel(currentNode) == currentLevel) {
+        focusNode(currentNode);
+        levelFound = true;
+      } else {
+        if (currentNode.children.length > 0) {
+          currentNode = currentNode.children[_dir < 0 ? currentNode.children.length - 1 : 0];
+        } else {
+          levelFound = true;
+          focusNode(currentNode);
         }
       }
     }
@@ -613,13 +691,18 @@ namespace FreeMindViewer {
   function focusNode(_node: FMVNode): void {
     saveState();
 
+    if (_node && _node.parent && _node !== root) {
+      if (_node.parent.node.getAttribute("FOLDED") == "true") { return; }
+    }
+
     if (focusedNode)
       focusedNode.fillstyle = "RGBA(10,10,10,0)";
 
     focusedNode = _node;
 
-    if (focusedNode)
+    if (focusedNode) {
       focusedNode.fillstyle = "RGBA(10,10,10,0.2)";
+    }
 
     redrawWithoutChildren();
   }
