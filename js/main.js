@@ -591,7 +591,7 @@ var FreeMindViewer;
         saveState();
         if (_node && _node.parent && _node !== root) {
             if (_node.parent.node.getAttribute("FOLDED") == "true") {
-                return;
+                foldNode(_node.parent, true, false);
             }
         }
         if (focusedNode)
