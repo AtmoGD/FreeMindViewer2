@@ -600,6 +600,8 @@ var FreeMindViewer;
         if (focusedNode) {
             focusedNode.fillstyle = "RGBA(10,10,10,0.2)";
         }
+        mindmapData = createXMLFile();
+        createMindmap();
         redrawWithoutChildren();
     }
     function createTextFieldOnNode() {

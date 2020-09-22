@@ -564,7 +564,7 @@ namespace FreeMindViewer {
     }
     foldNode(_of, true, false);
     foldNode(_to, true, false);
-    
+
     mindmapData = createXMLFile();
     createMindmap();
 
@@ -693,7 +693,7 @@ namespace FreeMindViewer {
     saveState();
 
     if (_node && _node.parent && _node !== root) {
-      if (_node.parent.node.getAttribute("FOLDED") == "true") { 
+      if (_node.parent.node.getAttribute("FOLDED") == "true") {
         foldNode(_node.parent, true, false);
       }
     }
@@ -707,6 +707,8 @@ namespace FreeMindViewer {
       focusedNode.fillstyle = "RGBA(10,10,10,0.2)";
     }
 
+    mindmapData = createXMLFile();
+    createMindmap();
     redrawWithoutChildren();
   }
 
