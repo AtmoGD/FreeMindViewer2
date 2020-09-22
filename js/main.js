@@ -592,6 +592,9 @@ var FreeMindViewer;
         if (_node && _node.parent && _node !== root) {
             if (_node.parent.node.getAttribute("FOLDED") == "true") {
                 foldNode(_node.parent, true, false);
+                mindmapData = createXMLFile();
+                createMindmap();
+                focusNode(_node);
             }
         }
         if (focusedNode)
@@ -600,8 +603,6 @@ var FreeMindViewer;
         if (focusedNode) {
             focusedNode.fillstyle = "RGBA(10,10,10,0.2)";
         }
-        mindmapData = createXMLFile();
-        createMindmap();
         redrawWithoutChildren();
     }
     function createTextFieldOnNode() {
