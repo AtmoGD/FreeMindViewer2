@@ -596,6 +596,7 @@ var FreeMindViewer;
                 mindmapData = createXMLFile();
                 createMindmap();
                 focusNode(findNodeByID(id));
+                return;
             }
         }
         if (focusedNode)

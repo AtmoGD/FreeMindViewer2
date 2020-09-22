@@ -699,6 +699,7 @@ namespace FreeMindViewer {
         mindmapData = createXMLFile();
         createMindmap();
         focusNode(findNodeByID(id));
+        return;
       }
     }
 
